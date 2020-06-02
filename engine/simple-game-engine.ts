@@ -51,6 +51,10 @@ export class SimpleGameEngine implements GameEngine {
       throw new Error('Game is not started yet');
     }
 
+    if (rect.left + rect.size.width > this.fieldSize.width || rect.top + rect.size.height > this.fieldSize.height) {
+      throw new Error('Rect is out of bounds');
+    }
+
     const intersects = this.rectsInternal.some((existingRect) => !!existingRect.getIntersection(rect));
 
     if (intersects) {
@@ -94,7 +98,7 @@ export class SimpleGameEngine implements GameEngine {
   private changeState(rect: Rect): void {
     for (let x = rect.left; x < rect.left + rect.size.width; ++x) {
       for (let y = rect.top; y < rect.top + rect.size.height; ++y) {
-        this.stateInternal[x][y] = true;
+        this.stateInternal[y][x] = true; // Indices are inverted, first index relates to Y-axis, second - to X-axis
       }
     }
   }

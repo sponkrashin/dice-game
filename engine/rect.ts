@@ -1,7 +1,11 @@
 import { Size } from './size';
 
 export class Rect {
-  constructor(public readonly top: number, public readonly left: number, public readonly size: Size) {}
+  constructor(public readonly left: number, public readonly top: number, public readonly size: Size) {
+    if (left < 0 || top < 0 || size.width <= 0 || size.height <= 0) {
+      throw new Error('Rect position and size should be positive numbers');
+    }
+  }
 
   getValue(): number {
     return this.size.width * this.size.height;
