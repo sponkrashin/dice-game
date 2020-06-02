@@ -1,10 +1,35 @@
-import { SimpleGameEngine, Rect } from 'engine';
+import { SimpleGameEngine, Rect, SimpleDice } from 'engine';
 
-const engine = new SimpleGameEngine({ width: 5, height: 5 });
+const engine = new SimpleGameEngine({ width: 10, height: 10 });
 
-engine.registerOnStateChanged((engine) => console.log(engine.players));
+const positionDice = new SimpleDice(10);
+const sizeDice = new SimpleDice(6);
+
+engine.registerOnStateChanged((engine) => {
+  engine.state.forEach((row) => {
+    const rowString = row.map((r) => (r ? 'X' : '-')).join('');
+    console.log(rowString);
+  });
+
+  console.log();
+});
+
+engine.registerOnGameFinished((engine) => console.log(engine.players));
 
 engine.startGame();
 
-engine.addRect(null, new Rect(0, 0, { width: 2, height: 2 }));
-engine.addRect(null, new Rect(3, 3, { width: 1, height: 3 }));
+for (let i = 0; i < 10; ++i) {
+  const position = positionDice.roll();
+  const size = sizeDice.roll();
+
+  const newRect = new Rect(position[0] - 1, position[1] - 1, { width: size[0], height: size[1] });
+  console.log(newRect);
+
+  try {
+    engine.addRect(null, newRect);
+  } catch (err) {
+    console.log(err.message);
+  }
+}
+
+engine.finishGame();
