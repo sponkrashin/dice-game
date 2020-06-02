@@ -4,3 +4,6 @@ export * from './player';
 
 export * from './game-engine';
 export * from './simple-game-engine';
+
+export * from './dice';
+export * from './simple-dice';
