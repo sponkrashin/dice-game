@@ -1,12 +1,1 @@
-<h1>Let start a new Dice Game!</h1>
-
-<h4>Size of field</h4>
-<mat-form-field>
-  <mat-label>Size</mat-label>
-  <mat-select>
-    <mat-option *ngFor="let opt of size_options" [value]="opt" #selected_>
-        {{opt}}*{{opt}}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
-<a mat-button color='primary' [routerLink]="['/game']">Start</a>
+<h1>Start Game</h1>
