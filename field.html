@@ -33,6 +33,7 @@
         document.addEventListener("DOMContentLoaded", () =>{
 
             let selecting = false;
+            let points = [];
             
             const svg = d3.select("#canv");
             const canvas_width = svg.node().getBoundingClientRect().width;
@@ -64,7 +65,7 @@
                         if (selecting){
                             const rect = d3.select(this);
                             rect.style('fill', 'blue');
-                            set_neighbors(start_point, {'x': rect.attr('data-point-x'), 'y': rect.attr('data-point-y')});
+                            set_neighbors(start_point, {'x': rect.attr('data-point-x'), 'y': rect.attr('data-point-y')}, size);
                         }
                     })
                     .transition().duration(1500)
@@ -81,7 +82,7 @@
                 svg.selectAll('rect').data(points).exit().remove();
             }
 
-            function set_neighbors(start_point, end_point){
+            function set_neighbors(start_point, end_point, size){
                 if (start_point == null){
                     alert('end');
                     return;
