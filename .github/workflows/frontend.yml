@@ -1,0 +1,19 @@
+name: Frontend
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    env:
+      working_directory: .\dice-game-ui-angular
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm install
+        working-directory: ${{env.working_directory}}
+      - run: npm run lint
+        working-directory: ${{env.working_directory}}
+      - run: npm run build
+        working-directory: ${{env.working_directory}}
