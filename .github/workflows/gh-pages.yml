@@ -4,23 +4,31 @@ on:
   push:
     branches:
       - master
+    paths:
+      - dice-game-ui-angular/**
+      - engine/**
 
 jobs:
   build:
     runs-on: windows-latest
-    
+
     env:
       working_directory: .\dice-game-ui-angular
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      - run: |
-          npm install
-          npm run gh-pages
+      - name: NPM install
+        run: npm install
         working-directory: ${{env.working_directory}}
 
-      - uses: peaceiris/actions-gh-pages@v3.6.1
+      - name: Build
+        run: npm run gh-pages
+        working-directory: ${{env.working_directory}}
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3.6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+          publish_dir: ./public
