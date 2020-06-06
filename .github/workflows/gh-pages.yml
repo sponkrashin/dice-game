@@ -2,8 +2,6 @@ name: Github Pages
 
 on:
   push:
-    paths:
-      - dice-game-ui-angular\**\*
     branches:
       - master
 
@@ -16,7 +14,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - run: npm install
+
+      - run: |
+          npm install
+          npm run gh-pages
         working-directory: ${{env.working_directory}}
-      - run: npm run gh-pages
-        working-directory: ${{env.working_directory}}
+
+      - uses: peaceiris/actions-gh-pages@v3.6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
