@@ -65,6 +65,12 @@ export class SimpleGameEngine implements GameEngine {
       throw new Error('Rect is intersected with other rects and could not be added');
     }
 
+    const touched = this.rectsInternal.some((existingRect) => !!existingRect.getIsTouched(rect));
+
+    if (this.rectsInternal.length !== 0 && !touched) {
+      throw new Error("Rect doesn't touch an existing rect and could not be added");
+    }
+
     this.rectsInternal.push(rect);
     this.changeState(rect);
 

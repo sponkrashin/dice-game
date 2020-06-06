@@ -54,6 +54,22 @@ export class Rect {
     );
   }
 
+  getIsTouched(rect: Rect): boolean {
+    // Left and right edges
+    for (let y = this.top; y < this.top + this.size.height; ++y) {
+      if (rect.isPointInside(this.left - 1, y) || rect.isPointInside(this.left + this.size.width, y)) {
+        return true;
+      }
+    }
+
+    // Top and bottom edges
+    for (let x = this.left; x < this.left + this.size.width; ++x) {
+      if (rect.isPointInside(x, this.top - 1) || rect.isPointInside(x, this.top + this.size.height)) {
+        return true;
+      }
+    }
+  }
+
   private isPointInside(x: number, y: number): boolean {
     return this.left <= x && x < this.left + this.size.width && this.top <= y && y < this.top + this.size.height;
   }
