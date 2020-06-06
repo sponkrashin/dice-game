@@ -1,0 +1,20 @@
+name: Frontend
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    env:
+      working_directory: .\dice-game-ui-angular
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm install
+        working-directory: ${{env.working_directory}}
+      - run: npm run gh-pages
+        working-directory: ${{env.working_directory}}
