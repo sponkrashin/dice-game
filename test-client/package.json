@@ -2,7 +2,7 @@
   "name": "test-client",
   "version": "1.0.0",
   "scripts": {
-    "run": "webpack & node index.js"
+    "start": "webpack & node index.js"
   },
   "devDependencies": {
     "ts-loader": "^7.0.5",
