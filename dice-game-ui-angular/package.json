@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "gh-pages": "ng build --prod --output-path ../docs --base-href /dice-game/"
   },
   "private": true,
   "dependencies": {
