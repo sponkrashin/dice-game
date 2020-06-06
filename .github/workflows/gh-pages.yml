@@ -1,7 +1,9 @@
-name: Frontend
+name: Github Pages
 
 on:
   push:
+    paths:
+      - dice-game-ui-angular\**\*
     branches:
       - master
 
