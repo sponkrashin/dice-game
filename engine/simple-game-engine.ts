@@ -9,8 +9,8 @@ export class SimpleGameEngine implements GameEngine {
   }
 
   get players(): readonly Player[] {
-    const playerScore = this.rectsInternal.reduce((p, r) => p + r.getValue(), 0);
-    return [{ playerId: null, score: playerScore }];
+    const playerScore = this.rectsInternal.reduce((p, r) => p + r.getScore(), 0);
+    return [{ playerId: null, score: playerScore, rects: this.rectsInternal }];
   }
 
   get rects(): readonly Rect[] {
