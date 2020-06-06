@@ -1,10 +1,14 @@
 import { Size } from './size';
 
 export class Rect {
-  constructor(public readonly left: number, public readonly top: number, public readonly size: Size) {
-    if (left < 0 || top < 0 || size.width <= 0 || size.height <= 0) {
+  readonly size: Size;
+
+  constructor(readonly left: number, readonly top: number, width: number, height: number) {
+    if (left < 0 || top < 0 || width <= 0 || height <= 0) {
       throw new Error('Rect position and size should be positive numbers');
     }
+
+    this.size = { width, height };
   }
 
   getScore(): number {
@@ -42,10 +46,12 @@ export class Rect {
       return null;
     }
 
-    return new Rect(intersectLeft, intersectRight, {
-      width: intersectRight - intersectLeft + 1,
-      height: intersectBottom - intersectTop + 1,
-    });
+    return new Rect(
+      intersectLeft,
+      intersectRight,
+      intersectRight - intersectLeft + 1,
+      intersectBottom - intersectTop + 1
+    );
   }
 
   private isPointInside(x: number, y: number): boolean {

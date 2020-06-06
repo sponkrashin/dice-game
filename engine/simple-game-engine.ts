@@ -17,6 +17,8 @@ export class SimpleGameEngine implements GameEngine {
     return this.rectsInternal;
   }
 
+  readonly fieldSize: Size;
+
   private stateInternal: boolean[][];
   private rectsInternal: Rect[] = [];
 
@@ -25,7 +27,9 @@ export class SimpleGameEngine implements GameEngine {
   private onStateChangedEventHandlers: GameEngineEventHandler[] = [];
   private onGameFinishedEventHandlers: GameEngineEventHandler[] = [];
 
-  constructor(public readonly fieldSize: Size) {}
+  constructor(fieldWidth: number, fieldHeight: number) {
+    this.fieldSize = { width: fieldWidth, height: fieldHeight };
+  }
 
   startGame(): void {
     if (this.isGameStarted) {

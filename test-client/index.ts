@@ -1,6 +1,6 @@
 import { SimpleGameEngine, Rect, SimpleDice } from 'engine';
 
-const engine = new SimpleGameEngine({ width: 10, height: 10 });
+const engine = new SimpleGameEngine(10, 10);
 
 const positionDice = new SimpleDice(10);
 const sizeDice = new SimpleDice(6);
@@ -22,7 +22,7 @@ for (let i = 0; i < 10; ++i) {
   const position = positionDice.roll();
   const size = sizeDice.roll();
 
-  const newRect = new Rect(position[0] - 1, position[1] - 1, { width: size[0], height: size[1] });
+  const newRect = new Rect(position[0] - 1, position[1] - 1, size[0], size[1]);
   console.log(newRect);
 
   try {
