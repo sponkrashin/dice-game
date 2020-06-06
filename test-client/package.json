@@ -1,0 +1,16 @@
+{
+  "name": "test-client",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "webpack & node index.js"
+  },
+  "devDependencies": {
+    "ts-loader": "^7.0.5",
+    "typescript": "^3.9.3",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "engine": "file:../engine"
+  }
+}
