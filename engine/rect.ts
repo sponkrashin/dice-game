@@ -49,6 +49,6 @@ export class Rect {
   }
 
   private isPointInside(x: number, y: number): boolean {
-    return this.left <= x && this.left + this.size.width > x && this.top <= y && this.top + this.size.height > y;
+    return this.left <= x && x < this.left + this.size.width && this.top <= y && y < this.top + this.size.height;
   }
 }
