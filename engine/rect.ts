@@ -7,7 +7,7 @@ export class Rect {
     }
   }
 
-  getValue(): number {
+  getScore(): number {
     return this.size.width * this.size.height;
   }
 
