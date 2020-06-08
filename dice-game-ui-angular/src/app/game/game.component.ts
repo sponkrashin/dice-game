@@ -23,8 +23,8 @@ export class GameComponent implements OnInit {
   public svg = null;
   public startPoint = null;
 
-  public dice1: number = 1;
-  public dice2: number = 1;
+  public dice1: number = 0;
+  public dice2: number = 0;
 
   public gameFinished = false;
   public score = 0;
@@ -48,7 +48,7 @@ export class GameComponent implements OnInit {
       //this.loadD3Script();
     });
 
-    this.gameEngine.registerOnGameFinished((engine) => (this.gameFinished = true));
+    this.gameEngine.registerOnGameFinished((engine) => this.gameFinished = true);
 
     this.gameEngine.startGame();
   }
@@ -72,9 +72,16 @@ export class GameComponent implements OnInit {
     const dices = this.simpleDice.roll();
     this.dice1 = dices[0];
     this.dice2 = dices[1];
+    if (!this.fieldHasPlace()) {
+      this.gameEngine.finishGame();
+    }
     //this.loadD3Script();
     this.points = this.castData();
     this.render_field();
+  }
+
+  public fieldHasPlace() : boolean{
+    return true;
   }
 
   public castData(): any[] {
@@ -97,21 +104,22 @@ export class GameComponent implements OnInit {
       .data(this.points)
       .enter()
       .append('rect')
-      .attr('x', d => {
+      .attr('x', (d) => {
         return d.x * rectSide + d.x * border;
       })
-      .attr('y', d => {
+      .attr('y', (d) => {
         return d.y * rectSide + d.y * border;
       })
       .attr('height', rectSide)
       .attr('width', rectSide)
-      .attr('data-point-x', d => {
+      .attr('data-point-x', (d) => {
         return d.x;
       })
-      .attr('data-point-y', d => {
+      .attr('data-point-y', (d) => {
         return d.y;
       })
       .on('mousedown', (d, i, nodes) => {
+        if (this.dice1 < 1 || this.dice2 < 1) return;
         this.selecting = true;
         const rect = d3.select(nodes[i]);
         rect.style('fill', 'blue');
@@ -151,7 +159,7 @@ export class GameComponent implements OnInit {
     this.svg
       .selectAll('rect')
       .data(this.points)
-      .style('fill', d => {
+      .style('fill', (d) => {
         if (d.set === true) {
           return 'red';
         } else if (d.sel === true) {
@@ -170,7 +178,7 @@ export class GameComponent implements OnInit {
     return selectedPointsCount === this.dice1 * this.dice2;
   }
 
-  public select_area(rect) : Rect {
+  public select_area(rect): Rect {
     if (this.selecting) {
       rect.style('fill', 'blue');
       return this.set_neighbors(this.startPoint, { x: rect.attr('data-point-x'), y: rect.attr('data-point-y') });
