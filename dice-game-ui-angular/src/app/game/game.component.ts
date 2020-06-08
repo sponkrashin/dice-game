@@ -23,8 +23,8 @@ export class GameComponent implements OnInit {
   public svg = null;
   public startPoint = null;
 
-  public dice1: number = 0;
-  public dice2: number = 0;
+  public dice1 = 0;
+  public dice2 = 0;
 
   public gameFinished = false;
   public score = 0;
@@ -45,16 +45,14 @@ export class GameComponent implements OnInit {
       this.score = engine.players[0].score;
       this.points = this.castData();
       this.render_field();
-      //this.loadD3Script();
     });
 
-    this.gameEngine.registerOnGameFinished((engine) => this.gameFinished = true);
+    this.gameEngine.registerOnGameFinished((engine) => (this.gameFinished = true));
 
     this.gameEngine.startGame();
   }
 
   ngOnInit(): void {
-    //this.loadD3Script();
     this.svg = d3.select('#canv');
     this.points = this.castData();
     this.render_field();
@@ -63,7 +61,7 @@ export class GameComponent implements OnInit {
   /// get actual size of div for the game field
   @HostListener('window:resize', ['$event.target'])
   onResize() {
-    this.canvasWidth = parseInt(this.el.getAttribute('actual-width'));
+    this.canvasWidth = parseInt(this.el.getAttribute('actual-width'), 10);
     this.render_field();
   }
   ////
@@ -75,17 +73,17 @@ export class GameComponent implements OnInit {
     if (!this.fieldHasPlace()) {
       this.gameEngine.finishGame();
     }
-    //this.loadD3Script();
+
     this.points = this.castData();
     this.render_field();
   }
 
-  public fieldHasPlace() : boolean{
+  public fieldHasPlace(): boolean {
     return true;
   }
 
   public castData(): any[] {
-    let points = [];
+    const points = [];
     for (let i = 0; i < this.gameEngine.fieldSize.width; i++) {
       for (let j = 0; j < this.gameEngine.fieldSize.height; j++) {
         points.push({ x: i, y: j, set: this.gameEngine.state[i][j] });
@@ -95,7 +93,7 @@ export class GameComponent implements OnInit {
   }
 
   public render_field() {
-    //this.svg.node().getBoundingClientRect().width;
+    // this.svg.node().getBoundingClientRect().width;
     const rectSide = this.canvasWidth / this.fieldSize;
     const border = rectSide * 0.01;
     // add
@@ -119,21 +117,22 @@ export class GameComponent implements OnInit {
         return d.y;
       })
       .on('mousedown', (d, i, nodes) => {
-        if (this.dice1 < 1 || this.dice2 < 1) return;
+        if (this.dice1 < 1 || this.dice2 < 1) {
+          return;
+        }
         this.selecting = true;
-        const rect = d3.select(nodes[i]);
-        rect.style('fill', 'blue');
+        const pointElement = d3.select(nodes[i]);
+        pointElement.style('fill', 'blue');
         this.startPoint = {
-          x: rect.attr('data-point-x'),
-          y: rect.attr('data-point-y'),
+          x: pointElement.attr('data-point-x'),
+          y: pointElement.attr('data-point-y'),
         };
+        this.render_field();
       })
       .on('mouseup', (d, i, nodes) => {
-        const rect = d3.select(nodes[i]);
-        const selectedRect = this.select_area(rect);
+        const pointElement = d3.select(nodes[i]);
+        const selectedRect = this.select_area(pointElement);
         this.selecting = false;
-
-        let endPoint = { x: rect.attr('data-point-x'), y: rect.attr('data-point-y') };
 
         if (this.isFullRect(selectedRect)) {
           try {
@@ -142,9 +141,11 @@ export class GameComponent implements OnInit {
             this.dice2 = 0;
           } catch (ex) {
             alert(ex);
+            this.clearSelection();
           }
         } else {
           alert(`Selected area is not equal to ${this.dice1} by ${this.dice2}`);
+          this.clearSelection();
         }
 
         this.startPoint = null;
@@ -173,15 +174,25 @@ export class GameComponent implements OnInit {
     this.svg.selectAll('rect').data(this.points).exit().remove();
   }
 
+  public clearSelection(){
+    for (const point of this.points){
+      point.sel = false;
+    }
+    this.render_field();
+  }
+
   public isFullRect(rect: Rect): boolean {
     const selectedPointsCount = this.points.filter((x) => x.sel).length;
     return selectedPointsCount === this.dice1 * this.dice2;
   }
 
-  public select_area(rect): Rect {
+  public select_area(pointElement): Rect {
     if (this.selecting) {
-      rect.style('fill', 'blue');
-      return this.set_neighbors(this.startPoint, { x: rect.attr('data-point-x'), y: rect.attr('data-point-y') });
+      pointElement.style('fill', 'blue');
+      return this.set_neighbors(this.startPoint, {
+        x: pointElement.attr('data-point-x'),
+        y: pointElement.attr('data-point-y'),
+      });
     }
     return null;
   }
