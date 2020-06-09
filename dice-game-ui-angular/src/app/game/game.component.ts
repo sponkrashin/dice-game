@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import * as d3 from 'd3';
 
-import { SimpleGameEngine, SimpleDice, Rect } from '../../../../engine';
+import { SimpleGameEngine, SimpleDice, Rect, Size } from '../../../../engine';
 
 @Component({
   selector: 'app-game',
@@ -34,7 +34,7 @@ export class GameComponent implements OnInit {
     if (storageFieldSize) {
       this.fieldSize = Number(storageFieldSize);
     } else {
-      this.fieldSize = 20;
+      this.fieldSize = 6;
     }
 
     this.gameEngine = new SimpleGameEngine(this.fieldSize, this.fieldSize);
@@ -78,8 +78,59 @@ export class GameComponent implements OnInit {
     this.render_field();
   }
 
-  public fieldHasPlace(): boolean {
-    return true;
+  private fieldHasPlace(): boolean {
+    let resRects: Size[] = [];
+    for (let row = 0; row < this.gameEngine.fieldSize.height; row++) {
+      for (let col = 0; col < this.gameEngine.fieldSize.width; col++) {
+        if (!this.gameEngine.state[col][row]) {
+          const fieldWidth = this.gameEngine.fieldSize.width;
+          const fieldHeight = this.gameEngine.fieldSize.height;
+          const curRect = this.findFreeRect(col, fieldWidth, row, fieldHeight, this.gameEngine.state);
+          resRects = resRects.concat(curRect);
+        }
+      }
+    }
+    const filtered = resRects.filter(i => (this.dice1 >= i.height && this.dice2 >= i.width) ||
+    (this.dice1 >= i.width && this.dice2 >= i.height));
+    console.log(typeof(filtered));
+    // ToDo: check for null!
+    return filtered.length > 0;
+  }
+
+  private findFreeRect(startColIndex, endColIndex, startRowIndex, endRowIndex, state: boolean[][], curHeight = 0, curWidth = 0): Size[]{
+    const stR = startRowIndex;
+    let resRects: Size[] = [];
+    if (startColIndex === endColIndex  || startRowIndex === endRowIndex){
+      return resRects;
+    }
+    if (curWidth === 0){
+      for (let col = startColIndex; col < endColIndex; col++){
+        if (state[col][startRowIndex]){
+          endColIndex = col;
+          break;
+        }
+      }
+      curWidth = endColIndex - startColIndex;
+      curHeight = 1;
+      startRowIndex++;
+    }
+    for (let row = startRowIndex; row < endRowIndex; row++) {
+      let isBroken = false;
+      for (let col = startColIndex; col < endColIndex; col++) {
+        if (state[col][row]) {
+          resRects.push({height: curHeight, width: curWidth});
+          resRects = resRects.concat(this.findFreeRect(startColIndex, col, row + 1, endRowIndex, state, curHeight, col - startColIndex));
+          isBroken = true;
+          break;
+        }
+      }
+      if (isBroken){
+        break;
+      }
+      curHeight++;
+    }
+    resRects.push({height: curHeight, width: curWidth});
+    return resRects;
   }
 
   public castData(): FieldPoint[] {
