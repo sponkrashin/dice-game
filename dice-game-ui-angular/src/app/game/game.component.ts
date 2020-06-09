@@ -17,11 +17,11 @@ export class GameComponent implements OnInit {
   public gameEngine;
   public simpleDice;
 
-  public points = [];
+  public points: FieldPoint[] = [];
 
   public selecting = false;
   public svg = null;
-  public startPoint = null;
+  public startPoint: FieldPoint = null;
 
   public dice1 = 0;
   public dice2 = 0;
@@ -34,7 +34,7 @@ export class GameComponent implements OnInit {
     if (storageFieldSize) {
       this.fieldSize = Number(storageFieldSize);
     } else {
-      this.fieldSize = 10;
+      this.fieldSize = 20;
     }
 
     this.gameEngine = new SimpleGameEngine(this.fieldSize, this.fieldSize);
@@ -82,11 +82,16 @@ export class GameComponent implements OnInit {
     return true;
   }
 
-  public castData(): any[] {
-    const points = [];
+  public castData(): FieldPoint[] {
+    const points: FieldPoint[] = [];
     for (let i = 0; i < this.gameEngine.fieldSize.width; i++) {
       for (let j = 0; j < this.gameEngine.fieldSize.height; j++) {
-        points.push({ x: i, y: j, set: this.gameEngine.state[i][j] });
+        points.push({
+          x: i,
+          y: j,
+          selected: false,
+          set: this.gameEngine.state[i][j]
+        });
       }
     }
     return points;
@@ -124,8 +129,10 @@ export class GameComponent implements OnInit {
         const pointElement = d3.select(nodes[i]);
         pointElement.style('fill', 'blue');
         this.startPoint = {
-          x: pointElement.attr('data-point-x'),
-          y: pointElement.attr('data-point-y'),
+          x: parseInt(pointElement.attr('data-point-x'), 10),
+          y: parseInt(pointElement.attr('data-point-y'), 10),
+          set: false,
+          selected: false
         };
         this.render_field();
       })
@@ -163,7 +170,7 @@ export class GameComponent implements OnInit {
       .style('fill', (d) => {
         if (d.set === true) {
           return 'red';
-        } else if (d.sel === true) {
+        } else if (d.selected === true) {
           return 'blue';
         } else {
           return 'lightblue';
@@ -176,13 +183,13 @@ export class GameComponent implements OnInit {
 
   public clearSelection(){
     for (const point of this.points){
-      point.sel = false;
+      point.selected = false;
     }
     this.render_field();
   }
 
   public isFullRect(rect: Rect): boolean {
-    const selectedPointsCount = this.points.filter((x) => x.sel).length;
+    const selectedPointsCount = this.points.filter((x) => x.selected).length;
     return selectedPointsCount === this.dice1 * this.dice2;
   }
 
@@ -190,14 +197,16 @@ export class GameComponent implements OnInit {
     if (this.selecting) {
       pointElement.style('fill', 'blue');
       return this.set_neighbors(this.startPoint, {
-        x: pointElement.attr('data-point-x'),
-        y: pointElement.attr('data-point-y'),
+        x: parseInt(pointElement.attr('data-point-x'), 10),
+        y: parseInt(pointElement.attr('data-point-y'), 10),
+        selected: false,
+        set: false
       });
     }
     return null;
   }
 
-  public set_neighbors(startPoint, endPoint): Rect {
+  public set_neighbors(startPoint: FieldPoint, endPoint: FieldPoint): Rect {
     if (startPoint == null) {
       return;
     }
@@ -218,7 +227,7 @@ export class GameComponent implements OnInit {
     }
     // Limit width by dice value
     if (lenX >= d1) {
-      if (minX == startPoint.x) {
+      if (minX === startPoint.x) {
         maxX -= lenX - d1;
       } else {
         minX += lenX - d1;
@@ -226,7 +235,7 @@ export class GameComponent implements OnInit {
     }
     // Limit height by dice value
     if (lenY >= d2) {
-      if (minY == startPoint.y) {
+      if (minY === startPoint.y) {
         maxY -= lenY - d2;
       } else {
         minY += lenY - d2;
@@ -235,13 +244,20 @@ export class GameComponent implements OnInit {
     // Set selection for points
     for (const point of this.points) {
       if (point.x <= maxX && point.x >= minX && point.y <= maxY && point.y >= minY) {
-        point.sel = true;
+        point.selected = true;
       } else {
-        point.sel = false;
+        point.selected = false;
       }
     }
 
     this.render_field();
     return new Rect(minY, minX, maxY - minY + 1, maxX - minX + 1); // inverted axis!!
   }
+}
+
+interface FieldPoint {
+  readonly x: number;
+  readonly y: number;
+  selected: boolean;
+  set: boolean;
 }
