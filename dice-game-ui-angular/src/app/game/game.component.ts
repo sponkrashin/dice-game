@@ -13,7 +13,6 @@ export class GameComponent implements OnInit {
   private readonly setColor = "#D28EFF";
   private readonly selectedColor = "#3f51b5";
   private readonly emptyColor = "lightblue";
-  private canvasWidth = 600;
   private canvasMaxHeight = 600;
 
   private gameEngine;
@@ -25,7 +24,6 @@ export class GameComponent implements OnInit {
   private svg = null;
   private startPoint: FieldPoint = null;
 
-  public elWidth = 0;
   public dice1 = 0;
   public dice2 = 0;
   public gameFinished = false;
@@ -39,8 +37,10 @@ export class GameComponent implements OnInit {
       fieldSize = Number(storageFieldSize);
     }
 
-    this.gameEngine = new SimpleGameEngine(fieldSize, fieldSize);
-    this.simpleDice = new SimpleDice(6);
+    if (!this.gameEngine){
+      this.gameEngine = new SimpleGameEngine(fieldSize, fieldSize);
+      this.simpleDice = new SimpleDice(6);
+    }
 
     this.gameEngine.registerOnStateChanged((engine) => {
       this.gameEngine = engine;
@@ -49,7 +49,9 @@ export class GameComponent implements OnInit {
       this.render_field();
     });
 
-    this.gameEngine.registerOnGameFinished((engine) => (this.gameFinished = true));
+    this.gameEngine.registerOnGameFinished((engine) => {
+      this.gameFinished = true;
+    });
 
     this.gameEngine.startGame();
   }
@@ -215,7 +217,7 @@ export class GameComponent implements OnInit {
             this.gameEngine.addRect(null, selectedRect);
             this.dice1 = 0;
             this.dice2 = 0;
-            if (this.gameEngine.state.filter(cell => !cell).length === 0){
+            if (this.gameEngine.state.reduce((prev, next) => prev.concat(next)).filter(c => !c).length === 0){
               this.gameEngine.finishGame();
             }
           } catch (ex) {
