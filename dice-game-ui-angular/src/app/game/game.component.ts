@@ -9,8 +9,10 @@ import { SimpleGameEngine, SimpleDice, Rect, Size } from '../../../../engine';
   styleUrls: ['./game.component.scss'],
 })
 export class GameComponent implements OnInit {
-  private el: HTMLElement; // div for game field
 
+  private readonly setColor = "#D28EFF";
+  private readonly selectedColor = "#3f51b5";
+  private readonly emptyColor = "lightblue";
   private canvasWidth = 600;
   private canvasMaxHeight = 600;
 
@@ -228,7 +230,7 @@ export class GameComponent implements OnInit {
         const rect = d3.select(nodes[i]);
         this.select_area(rect);
       })
-      .style('fill', 'lightblue');
+      .style('fill', this.emptyColor);
 
     // update
     this.svg
@@ -236,11 +238,11 @@ export class GameComponent implements OnInit {
       .data(this.points)
       .style('fill', (d) => {
         if (d.set === true) {
-          return 'red';
+          return this.setColor;
         } else if (d.selected === true) {
-          return 'blue';
+          return this.selectedColor;
         } else {
-          return 'lightblue';
+          return this.emptyColor;
         }
       });
 
@@ -262,7 +264,7 @@ export class GameComponent implements OnInit {
 
   public select_area(pointElement): Rect {
     if (this.selecting) {
-      pointElement.style('fill', 'blue');
+      pointElement.style('fill', this.selectedColor);
       return this.set_neighbors(this.startPoint, {
         x: parseInt(pointElement.attr('data-point-x'), 10),
         y: parseInt(pointElement.attr('data-point-y'), 10),
