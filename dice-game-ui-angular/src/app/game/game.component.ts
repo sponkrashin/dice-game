@@ -11,20 +11,19 @@ import { SimpleGameEngine, SimpleDice, Rect, Size } from '../../../../engine';
 export class GameComponent implements OnInit {
   private el: HTMLElement; // div for game field
 
-  public canvasWidth = 600;
+  private canvasWidth = 600;
   public elWidth = 0;
   private gameEngine;
-  public simpleDice;
+  private simpleDice;
 
-  public points: FieldPoint[] = [];
+  private points: FieldPoint[] = [];
 
-  public selecting = false;
-  public svg = null;
-  public startPoint: FieldPoint = null;
+  private selecting = false;
+  private svg = null;
+  private startPoint: FieldPoint = null;
 
   public dice1 = 0;
   public dice2 = 0;
-
   public gameFinished = false;
   public score = 0;
 
@@ -53,6 +52,13 @@ export class GameComponent implements OnInit {
 
   ngOnInit(): void {
     this.svg = d3.select('#canv');
+    // fixed issues with actions outside svg element
+    d3.select('body')
+      .on('mouseup', () => {
+        this.clearSelection();
+        this.startPoint = null;
+        this.selecting = false;
+      });
     this.points = this.castData();
     this.render_field();
   }
@@ -184,14 +190,14 @@ export class GameComponent implements OnInit {
         if (this.dice1 < 1 || this.dice2 < 1) {
           return;
         }
-        this.selecting = true;
         const pointElement = d3.select(nodes[i]);
-        pointElement.style('fill', 'blue');
+        
+        this.selecting = true;
         this.startPoint = {
           x: parseInt(pointElement.attr('data-point-x'), 10),
           y: parseInt(pointElement.attr('data-point-y'), 10),
           set: false,
-          selected: false,
+          selected: true,
         };
         this.render_field();
       })
