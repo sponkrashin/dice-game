@@ -215,6 +215,9 @@ export class GameComponent implements OnInit {
             this.gameEngine.addRect(null, selectedRect);
             this.dice1 = 0;
             this.dice2 = 0;
+            if (this.gameEngine.state.filter(cell => !cell).length === 0){
+              this.gameEngine.finishGame();
+            }
           } catch (ex) {
             alert(ex);
             this.clearSelection();

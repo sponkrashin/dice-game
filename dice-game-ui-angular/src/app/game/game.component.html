@@ -1,6 +1,6 @@
 <div *ngIf="gameFinished; else playControls">
-    <img class="dice-img" src="/assets/images/dices/dice-{{dice1}}.png" alt="{{dice1}}"/>
-    <img class="dice-img" src="/assets/images/dices/dice-{{dice2}}.png" alt="{{dice2}}"/>
+    <img *ngIf="dice1>0" class="dice-img" src="/assets/images/dices/dice-{{dice1}}.png" alt="{{dice1}}"/>
+    <img *ngIf="dice2>0" class="dice-img" src="/assets/images/dices/dice-{{dice2}}.png" alt="{{dice2}}"/>
     <h2>The game has finished. Your total score is {{score}}</h2>
     <button mat-raised-button color="primary" [routerLink]="['/start']">Start again</button>
 </div>
