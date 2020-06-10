@@ -11,10 +11,9 @@ import { SimpleGameEngine, SimpleDice, Rect, Size } from '../../../../engine';
 export class GameComponent implements OnInit {
   private el: HTMLElement; // div for game field
 
-  public fieldSize = 0;
   public canvasWidth = 600;
   public elWidth = 0;
-  public gameEngine;
+  private gameEngine;
   public simpleDice;
 
   public points: FieldPoint[] = [];
@@ -30,14 +29,14 @@ export class GameComponent implements OnInit {
   public score = 0;
 
   constructor() {
+    let fieldSize = 6;
+    localStorage.removeItem('field-size');
     const storageFieldSize = localStorage.getItem('field-size');
     if (storageFieldSize) {
-      this.fieldSize = Number(storageFieldSize);
-    } else {
-      this.fieldSize = 6;
+      fieldSize = Number(storageFieldSize);
     }
 
-    this.gameEngine = new SimpleGameEngine(this.fieldSize, this.fieldSize);
+    this.gameEngine = new SimpleGameEngine(fieldSize, fieldSize);
     this.simpleDice = new SimpleDice(6);
 
     this.gameEngine.registerOnStateChanged((engine) => {
@@ -66,7 +65,7 @@ export class GameComponent implements OnInit {
   }
   ////
 
-  public roll_dices() {
+  public rollDices() {
     const dices = this.simpleDice.roll();
     this.dice1 = dices[0];
     this.dice2 = dices[1];
@@ -90,22 +89,29 @@ export class GameComponent implements OnInit {
         }
       }
     }
-    const filtered = resRects.filter(i => (this.dice1 >= i.height && this.dice2 >= i.width) ||
-    (this.dice1 >= i.width && this.dice2 >= i.height));
-    console.log(typeof(filtered));
-    // ToDo: check for null!
+    const filtered = resRects.filter(
+      (i) => (this.dice1 <= i.height && this.dice2 <= i.width) || (this.dice1 <= i.width && this.dice2 <= i.height)
+    );
     return filtered.length > 0;
   }
 
-  private findFreeRect(startColIndex, endColIndex, startRowIndex, endRowIndex, state: boolean[][], curHeight = 0, curWidth = 0): Size[]{
+  private findFreeRect(
+    startColIndex,
+    endColIndex,
+    startRowIndex,
+    endRowIndex,
+    state: boolean[][],
+    curHeight = 0,
+    curWidth = 0
+  ): Size[] {
     const stR = startRowIndex;
     let resRects: Size[] = [];
-    if (startColIndex === endColIndex  || startRowIndex === endRowIndex){
+    if (startColIndex === endColIndex || startRowIndex === endRowIndex) {
       return resRects;
     }
-    if (curWidth === 0){
-      for (let col = startColIndex; col < endColIndex; col++){
-        if (state[col][startRowIndex]){
+    if (curWidth === 0) {
+      for (let col = startColIndex; col < endColIndex; col++) {
+        if (state[col][startRowIndex]) {
           endColIndex = col;
           break;
         }
@@ -118,18 +124,20 @@ export class GameComponent implements OnInit {
       let isBroken = false;
       for (let col = startColIndex; col < endColIndex; col++) {
         if (state[col][row]) {
-          resRects.push({height: curHeight, width: curWidth});
-          resRects = resRects.concat(this.findFreeRect(startColIndex, col, row + 1, endRowIndex, state, curHeight, col - startColIndex));
+          resRects.push({ height: curHeight, width: curWidth });
+          resRects = resRects.concat(
+            this.findFreeRect(startColIndex, col, row + 1, endRowIndex, state, curHeight, col - startColIndex)
+          );
           isBroken = true;
           break;
         }
       }
-      if (isBroken){
+      if (isBroken) {
         break;
       }
       curHeight++;
     }
-    resRects.push({height: curHeight, width: curWidth});
+    resRects.push({ height: curHeight, width: curWidth });
     return resRects;
   }
 
@@ -141,7 +149,7 @@ export class GameComponent implements OnInit {
           x: i,
           y: j,
           selected: false,
-          set: this.gameEngine.state[i][j]
+          set: this.gameEngine.state[i][j],
         });
       }
     }
@@ -150,7 +158,7 @@ export class GameComponent implements OnInit {
 
   public render_field() {
     // this.svg.node().getBoundingClientRect().width;
-    const rectSide = this.canvasWidth / this.fieldSize;
+    const rectSide = this.canvasWidth / this.gameEngine.fieldSize.width;
     const border = rectSide * 0.01;
     // add
     this.svg
@@ -183,7 +191,7 @@ export class GameComponent implements OnInit {
           x: parseInt(pointElement.attr('data-point-x'), 10),
           y: parseInt(pointElement.attr('data-point-y'), 10),
           set: false,
-          selected: false
+          selected: false,
         };
         this.render_field();
       })
@@ -232,8 +240,8 @@ export class GameComponent implements OnInit {
     this.svg.selectAll('rect').data(this.points).exit().remove();
   }
 
-  public clearSelection(){
-    for (const point of this.points){
+  public clearSelection() {
+    for (const point of this.points) {
       point.selected = false;
     }
     this.render_field();
@@ -251,7 +259,7 @@ export class GameComponent implements OnInit {
         x: parseInt(pointElement.attr('data-point-x'), 10),
         y: parseInt(pointElement.attr('data-point-y'), 10),
         selected: false,
-        set: false
+        set: false,
       });
     }
     return null;
