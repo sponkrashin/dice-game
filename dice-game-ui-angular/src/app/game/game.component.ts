@@ -12,7 +12,8 @@ export class GameComponent implements OnInit {
   private el: HTMLElement; // div for game field
 
   private canvasWidth = 600;
-  public elWidth = 0;
+  private canvasMaxHeight = 600;
+
   private gameEngine;
   private simpleDice;
 
@@ -22,6 +23,7 @@ export class GameComponent implements OnInit {
   private svg = null;
   private startPoint: FieldPoint = null;
 
+  public elWidth = 0;
   public dice1 = 0;
   public dice2 = 0;
   public gameFinished = false;
@@ -53,12 +55,11 @@ export class GameComponent implements OnInit {
   ngOnInit(): void {
     this.svg = d3.select('#canv');
     // fixed issues with actions outside svg element
-    d3.select('body')
-      .on('mouseup', () => {
-        this.clearSelection();
-        this.startPoint = null;
-        this.selecting = false;
-      });
+    d3.select('body').on('mouseup', () => {
+      this.clearSelection();
+      this.startPoint = null;
+      this.selecting = false;
+    });
     this.points = this.castData();
     this.render_field();
   }
@@ -66,7 +67,7 @@ export class GameComponent implements OnInit {
   /// get actual size of div for the game field
   @HostListener('window:resize', ['$event.target'])
   onResize() {
-    this.canvasWidth = parseInt(this.el.getAttribute('actual-width'), 10);
+    this.svg.selectAll('rect').remove();
     this.render_field();
   }
   ////
@@ -110,7 +111,6 @@ export class GameComponent implements OnInit {
     curHeight = 0,
     curWidth = 0
   ): Size[] {
-    const stR = startRowIndex;
     let resRects: Size[] = [];
     if (startColIndex === endColIndex || startRowIndex === endRowIndex) {
       return resRects;
@@ -163,8 +163,10 @@ export class GameComponent implements OnInit {
   }
 
   public render_field() {
-    // this.svg.node().getBoundingClientRect().width;
-    const rectSide = this.canvasWidth / this.gameEngine.fieldSize.width;
+    const svgWidth = this.svg.node().getBoundingClientRect().width;
+    const newWidth = Math.min(svgWidth, this.canvasMaxHeight);
+    const margin = (svgWidth - newWidth) / 2;
+    const rectSide = newWidth / this.gameEngine.fieldSize.width;
     const border = rectSide * 0.01;
     // add
     this.svg
@@ -173,7 +175,7 @@ export class GameComponent implements OnInit {
       .enter()
       .append('rect')
       .attr('x', (d) => {
-        return d.x * rectSide + d.x * border;
+        return margin + d.x * rectSide + d.x * border;
       })
       .attr('y', (d) => {
         return d.y * rectSide + d.y * border;
@@ -191,7 +193,7 @@ export class GameComponent implements OnInit {
           return;
         }
         const pointElement = d3.select(nodes[i]);
-        
+
         this.selecting = true;
         this.startPoint = {
           x: parseInt(pointElement.attr('data-point-x'), 10),
