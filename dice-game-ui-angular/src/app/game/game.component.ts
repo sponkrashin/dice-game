@@ -10,9 +10,9 @@ import { SimpleGameEngine, SimpleDice, Rect, Size } from '../../../../engine';
 })
 export class GameComponent implements OnInit {
 
-  private readonly setColor = "#D28EFF";
-  private readonly selectedColor = "#3f51b5";
-  private readonly emptyColor = "lightblue";
+  private readonly setColor = '#D28EFF';
+  private readonly selectedColor = '#3f51b5';
+  private readonly emptyColor = 'lightblue';
   private canvasMaxHeight = 600;
 
   private gameEngine;
