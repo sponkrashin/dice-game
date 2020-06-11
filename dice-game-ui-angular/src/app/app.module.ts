@@ -16,7 +16,6 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { GameComponent } from './game/game.component';
 import { MainComponent } from './main/main.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,

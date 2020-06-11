@@ -6,16 +6,18 @@
 </div>
 
 <ng-template #playControls>
-    <div *ngIf="dice1>0 and dice2>0; else allowTurn">
-        <img class="dice-img" src="/assets/images/dices/dice-{{dice1}}.png" alt="{{dice1}}"/>
-        <img class="dice-img" src="/assets/images/dices/dice-{{dice2}}.png" alt="{{dice2}}"/>
+    <div class='inline'>
+        <div *ngIf="dice1>0 and dice2>0; else allowTurn">
+            <img class="dice-img" src="/assets/images/dices/dice-{{dice1}}.png" alt="{{dice1}}"/>
+            <img class="dice-img" src="/assets/images/dices/dice-{{dice2}}.png" alt="{{dice2}}"/>
+        </div>
+        <ng-template #allowTurn>
+        <div class="game-action">
+            <button mat-raised-button color="primary" (click)="rollDices()">Roll dices</button>
+        </div>
+        </ng-template>
+        <h1 class="m-3 mt-5">Score: {{score}}</h1>
     </div>
-    <ng-template #allowTurn>
-    <div class="game-action">
-        <button mat-raised-button color="primary" (click)="rollDices()">Roll dices</button>
-    </div>
-    </ng-template>
-    <h1>Score: {{score}}</h1>
 </ng-template>
 
 <div class="game-field">

@@ -31,7 +31,6 @@ export class GameComponent implements OnInit {
 
   constructor() {
     let fieldSize = 6;
-    localStorage.removeItem('field-size');
     const storageFieldSize = localStorage.getItem('field-size');
     if (storageFieldSize) {
       fieldSize = Number(storageFieldSize);
