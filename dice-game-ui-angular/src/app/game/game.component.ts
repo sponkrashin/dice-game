@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import * as d3 from 'd3';
 
-import { SimpleGameEngine, SimpleDice, Rect, Size } from '../../../../engine';
+import { SimpleGameEngine, SimpleDice, Rect, Size } from 'engine';
 
 @Component({
   selector: 'app-game',
