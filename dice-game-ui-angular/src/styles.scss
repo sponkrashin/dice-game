@@ -1,20 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-.m-3{
-    margin: 3px;
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
-.mt-5{
-    margin-top: 5px !important;
+.m-3 {
+  margin: 3px;
+}
+
+.mt-5 {
+  margin-top: 5px !important;
 }
 
 .p-0 {
-    padding: 0;
+  padding: 0;
 }
 
-.inline{
-    display:inline-flex;
+.inline {
+  display: inline-flex;
 }

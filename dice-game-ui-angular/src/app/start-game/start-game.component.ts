@@ -7,7 +7,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./start-game.component.scss'],
 })
 export class StartGameComponent implements OnInit {
-
   public size: number;
   public sizeOptions: number[] = [];
 
@@ -19,7 +18,7 @@ export class StartGameComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  startGame(){
+  startGame() {
     localStorage.setItem('field-size', this.size.toString());
     this.router.navigate(['/game']);
   }

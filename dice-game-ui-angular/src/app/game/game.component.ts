@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import * as d3 from 'd3';
 
-import { SimpleGameEngine, SimpleDice, Rect, Size } from '../../../../engine';
+import { SimpleGameEngine, SimpleDice, Rect, Size } from 'engine';
 
 @Component({
   selector: 'app-game',
@@ -9,7 +9,6 @@ import { SimpleGameEngine, SimpleDice, Rect, Size } from '../../../../engine';
   styleUrls: ['./game.component.scss'],
 })
 export class GameComponent implements OnInit {
-
   private readonly setColor = '#D28EFF';
   private readonly selectedColor = '#3f51b5';
   private readonly emptyColor = 'lightblue';
@@ -36,7 +35,7 @@ export class GameComponent implements OnInit {
       fieldSize = Number(storageFieldSize);
     }
 
-    if (!this.gameEngine){
+    if (!this.gameEngine) {
       this.gameEngine = new SimpleGameEngine(fieldSize, fieldSize);
       this.simpleDice = new SimpleDice(6);
     }
@@ -73,7 +72,6 @@ export class GameComponent implements OnInit {
     this.svg.selectAll('rect').remove();
     this.render_field();
   }
-  ////
 
   public rollDices() {
     const dices = this.simpleDice.roll();
@@ -216,7 +214,7 @@ export class GameComponent implements OnInit {
             this.gameEngine.addRect(null, selectedRect);
             this.dice1 = 0;
             this.dice2 = 0;
-            if (this.gameEngine.state.reduce((prev, next) => prev.concat(next)).filter(c => !c).length === 0){
+            if (this.gameEngine.state.reduce((prev, next) => prev.concat(next)).filter((c) => !c).length === 0) {
               this.gameEngine.finishGame();
             }
           } catch (ex) {

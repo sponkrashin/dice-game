@@ -5,7 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 
@@ -17,13 +17,7 @@ import { GameComponent } from './game/game.component';
 import { MainComponent } from './main/main.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    StartGameComponent,
-    NavMenuComponent,
-    GameComponent,
-    MainComponent
-  ],
+  declarations: [AppComponent, StartGameComponent, NavMenuComponent, GameComponent, MainComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -34,9 +28,9 @@ import { MainComponent } from './main/main.component';
     MatButtonModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatSidenavModule
+    MatSidenavModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
