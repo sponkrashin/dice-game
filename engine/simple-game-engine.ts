@@ -2,6 +2,14 @@ import { GameEngine, GameEngineEventHandler } from './game-engine';
 import { Size } from './size';
 import { Player } from './player';
 import { Rect } from './rect';
+import { Dice } from './dice';
+import { SimpleDice } from './simple-dice';
+
+export interface SimpleGameEngineOptions {
+  maxDiceValue: number;
+}
+
+const defaultOptions = { maxDiceValue: 6 } as SimpleGameEngineOptions;
 
 export class SimpleGameEngine implements GameEngine {
   get state(): readonly (readonly boolean[])[] {
@@ -17,18 +25,26 @@ export class SimpleGameEngine implements GameEngine {
     return this.rectsInternal;
   }
 
+  get dices(): readonly Dice[] {
+    return this.dicesInternal;
+  }
+
   readonly fieldSize: Size;
 
   private stateInternal: boolean[][];
   private rectsInternal: Rect[] = [];
+  private readonly dicesInternal: Dice[];
 
   private isGameStarted = false;
 
   private onStateChangedEventHandlers: GameEngineEventHandler[] = [];
   private onGameFinishedEventHandlers: GameEngineEventHandler[] = [];
 
-  constructor(fieldWidth: number, fieldHeight: number) {
+  constructor(fieldWidth: number, fieldHeight: number, options?: SimpleGameEngineOptions) {
+    options = options ?? defaultOptions;
+
     this.fieldSize = { width: fieldWidth, height: fieldHeight };
+    this.dicesInternal = [new SimpleDice(options.maxDiceValue), new SimpleDice(options.maxDiceValue)];
   }
 
   startGame(): void {
@@ -79,6 +95,10 @@ export class SimpleGameEngine implements GameEngine {
 
   skipTurn(userId: string): void {
     this.finishGame();
+  }
+
+  rollDice(): number[] {
+    return this.dicesInternal.map((d) => d.roll());
   }
 
   registerOnStateChanged(handler: GameEngineEventHandler): void {
