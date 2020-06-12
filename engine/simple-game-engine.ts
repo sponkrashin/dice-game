@@ -97,7 +97,7 @@ export class SimpleGameEngine implements GameEngine {
     this.finishGame();
   }
 
-  rollDice(): number[] {
+  rollDices(): number[] {
     return this.dicesInternal.map((d) => d.roll());
   }
 

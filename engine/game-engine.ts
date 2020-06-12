@@ -16,7 +16,7 @@ export interface GameEngine {
   finishGame(): void;
   addRect(userId: string, rect: Rect): void;
   skipTurn(userId: string): void;
-  rollDice(): number[];
+  rollDices(): number[];
 
   registerOnStateChanged(handler: GameEngineEventHandler): void;
   registerOnGameFinished(handler: GameEngineEventHandler): void;
