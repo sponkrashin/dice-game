@@ -1,4 +1,4 @@
-import { SimpleGameEngine, Rect, SimpleDice } from 'engine';
+import { SimpleGameEngine, Rect, SimpleDice } from '../engine';
 
 const engine = new SimpleGameEngine(10, 10);
 
