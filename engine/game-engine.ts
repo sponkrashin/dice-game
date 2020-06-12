@@ -11,6 +11,8 @@ export interface GameEngine {
   readonly players: readonly Player[];
   readonly rects: readonly Rect[];
   readonly dices: readonly Dice[];
+  readonly isStarted: boolean;
+  readonly isFinished: boolean;
 
   startGame(): void;
   finishGame(): void;

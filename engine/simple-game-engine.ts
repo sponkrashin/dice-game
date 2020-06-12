@@ -29,6 +29,14 @@ export class SimpleGameEngine implements GameEngine {
     return this.dicesInternal;
   }
 
+  get isStarted(): boolean {
+    return this.isGameStarted;
+  }
+
+  get isFinished(): boolean {
+    return !this.isGameStarted;
+  }
+
   readonly fieldSize: Size;
 
   private stateInternal: boolean[][];
