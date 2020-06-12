@@ -13,6 +13,7 @@ export interface GameEngine {
   startGame(): void;
   finishGame(): void;
   addRect(userId: string, rect: Rect): void;
+  skipTurn(userId: string): void;
 
   registerOnStateChanged(handler: GameEngineEventHandler): void;
   registerOnGameFinished(handler: GameEngineEventHandler): void;

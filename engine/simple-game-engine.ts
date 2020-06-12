@@ -77,6 +77,10 @@ export class SimpleGameEngine implements GameEngine {
     this.onStateChangedEventHandlers.forEach((handler) => handler(this));
   }
 
+  skipTurn(userId: string): void {
+    this.finishGame();
+  }
+
   registerOnStateChanged(handler: GameEngineEventHandler): void {
     if (!handler) {
       throw new Error('Handler should be defined');
