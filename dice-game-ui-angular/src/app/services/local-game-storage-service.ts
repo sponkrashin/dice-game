@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { GameEngine, SimpleGameEngine, Size } from 'engine';
 import { GameStorageService } from './game-storage-service';
-import { GameEngine, SimpleGameEngine, Size } from '../../../../engine';
 
 @Injectable({
   providedIn: 'root',

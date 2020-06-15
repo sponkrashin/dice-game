@@ -1,5 +1,5 @@
-import { GameEngine } from '../../../../engine';
 import { Injectable } from '@angular/core';
+import { GameEngine } from 'engine';
 
 @Injectable({
   providedIn: 'root',

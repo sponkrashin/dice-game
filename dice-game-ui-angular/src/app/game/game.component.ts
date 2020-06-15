@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import * as d3 from 'd3';
 
-import { SimpleDice, GameEngine, Dice, Rect, Size } from '../../../../engine';
+import { SimpleDice, GameEngine, Dice, Rect, Size } from 'engine';
 import { GameStorageService } from '../services/game-storage-service';
 import { LocalGameStorageService } from '../services/local-game-storage-service';
 
