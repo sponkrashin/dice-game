@@ -15,6 +15,7 @@ import { StartGameComponent } from './start-game/start-game.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { GameComponent } from './game/game.component';
 import { MainComponent } from './main/main.component';
+import { LocalGameStorageService } from './services/local-game-storage-service';
 
 @NgModule({
   declarations: [AppComponent, StartGameComponent, NavMenuComponent, GameComponent, MainComponent],

@@ -1,57 +1,66 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import * as d3 from 'd3';
 
-import { SimpleGameEngine, SimpleDice, Rect, Size } from 'engine';
+import { SimpleDice, GameEngine, Dice, Rect, Size } from '../../../../engine';
+import { GameStorageService } from '../services/game-storage-service';
+import { LocalGameStorageService } from '../services/local-game-storage-service';
+
+interface FieldPoint {
+  readonly x: number;
+  readonly y: number;
+  selected: boolean;
+  set: boolean;
+}
 
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss'],
+  providers: [{ provide: GameStorageService, useClass: LocalGameStorageService }],
 })
 export class GameComponent implements OnInit {
-  private readonly setColor = '#D28EFF';
-  private readonly selectedColor = '#3f51b5';
-  private readonly emptyColor = 'lightblue';
-  private canvasMaxHeight = 600;
+  private readonly setColor: string = '#D28EFF';
+  private readonly selectedColor: string = '#3f51b5';
+  private readonly emptyColor: string = 'lightblue';
+  private canvasMaxHeight: number = 600;
 
-  private gameEngine;
-  private simpleDice;
+  private gameEngine: GameEngine;
+  private simpleDice: Dice;
 
   private points: FieldPoint[] = [];
 
-  private selecting = false;
+  private selecting: boolean = false;
   private svg = null;
   private startPoint: FieldPoint = null;
 
-  public dice1 = 0;
-  public dice2 = 0;
-  public gameFinished = false;
-  public score = 0;
+  public dice1: number = 0;
+  public dice2: number = 0;
+  public gameFinished: boolean = false;
+  public score: number = 0;
 
-  constructor() {
-    let fieldSize = 6;
-    const storageFieldSize = localStorage.getItem('field-size');
-    if (storageFieldSize) {
-      fieldSize = Number(storageFieldSize);
+  constructor(private gameStorageService: GameStorageService) {
+    this.simpleDice = new SimpleDice(6);
+    try {
+      this.gameEngine = gameStorageService.restoreGame();
+    } catch {
+      throw new Error("The game wasn't started.");
     }
 
-    if (!this.gameEngine) {
-      this.gameEngine = new SimpleGameEngine(fieldSize, fieldSize);
-      this.simpleDice = new SimpleDice(6);
+    if (this.gameEngine) {
+      this.gameEngine.registerOnStateChanged((engine) => {
+        gameStorageService.saveGame(this.gameEngine);
+        this.score = engine.players[0].score;
+        this.points = this.castData();
+        this.render_field();
+      });
+
+      this.gameEngine.registerOnGameFinished((engine) => {
+        this.gameFinished = true;
+        gameStorageService.removeSavedGame(this.gameEngine);
+      });
+
+      this.gameEngine.startGame();
     }
-
-    this.gameEngine.registerOnStateChanged((engine) => {
-      this.gameEngine = engine;
-      this.score = engine.players[0].score;
-      this.points = this.castData();
-      this.render_field();
-    });
-
-    this.gameEngine.registerOnGameFinished((engine) => {
-      this.gameFinished = true;
-    });
-
-    this.gameEngine.startGame();
   }
 
   ngOnInit(): void {
@@ -108,7 +117,7 @@ export class GameComponent implements OnInit {
     endColIndex,
     startRowIndex,
     endRowIndex,
-    state: boolean[][],
+    state: readonly (readonly boolean[])[],
     curHeight = 0,
     curWidth = 0
   ): Size[] {
@@ -324,11 +333,4 @@ export class GameComponent implements OnInit {
     this.render_field();
     return new Rect(minY, minX, maxY - minY + 1, maxX - minX + 1); // inverted axis!!
   }
-}
-
-interface FieldPoint {
-  readonly x: number;
-  readonly y: number;
-  selected: boolean;
-  set: boolean;
 }
