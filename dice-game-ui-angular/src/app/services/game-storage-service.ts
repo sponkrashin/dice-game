@@ -1,7 +1,11 @@
 import { GameEngine } from '../../../../engine';
+import { Injectable } from '@angular/core';
 
-export interface GameStorageService {
-  saveGame(gameEngine: GameEngine): void;
-  restoreGame(): GameEngine;
-  removeSavedGame(gameEngine: GameEngine): void;
+@Injectable({
+  providedIn: 'root',
+})
+export abstract class GameStorageService {
+  abstract saveGame(gameEngine: GameEngine): void;
+  abstract restoreGame(): GameEngine;
+  abstract removeSavedGame(gameEngine: GameEngine): void;
 }

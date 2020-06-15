@@ -1,31 +1,28 @@
+import { Injectable } from '@angular/core';
 import { GameStorageService } from './game-storage-service';
-import { GameEngine, SimpleGameEngine } from '../../../../engine';
+import { GameEngine, SimpleGameEngine, Size } from '../../../../engine';
 
+@Injectable({
+  providedIn: 'root',
+})
 export class LocalGameStorageService implements GameStorageService {
-         private gameEngine: GameEngine;
+  private gameEngine: GameEngine;
 
-         saveGame(gameEngine: GameEngine): void {
-           this.gameEngine = gameEngine;
-           localStorage.setItem('field-size', gameEngine.fieldSize.toString());
-         }
+  saveGame(gameEngine: GameEngine): void {
+    this.gameEngine = gameEngine;
+    localStorage.setItem('field-size', gameEngine.fieldSize.width.toString());
+  }
 
-         restoreGame(): GameEngine {
-           const fieldSizeStr = localStorage.getItem('field-size');
-           let fieldSize: number = 0;
-           try {
-             fieldSize = parseInt(fieldSizeStr);
-           } catch {
-             throw new Error("Saved game wasn't found.");
-           }
-           if (!this.gameEngine) {
-             this.gameEngine = new SimpleGameEngine(fieldSize, fieldSize);
-           }
+  restoreGame(): GameEngine {
+    const fieldSize: number = JSON.parse(localStorage.getItem('field-size'));
+    if (fieldSize && !this.gameEngine) {
+      this.gameEngine = new SimpleGameEngine(fieldSize, fieldSize);
+    }
+    return this.gameEngine;
+  }
 
-           return this.gameEngine;
-         }
-
-         removeSavedGame(gameEngine: GameEngine): void {
-           this.gameEngine = null;
-           localStorage.removeItem('field-size');
-         }
-       }
+  removeSavedGame(gameEngine: GameEngine): void {
+    this.gameEngine = null;
+    localStorage.removeItem('field-size');
+  }
+}
