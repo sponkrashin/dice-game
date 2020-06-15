@@ -22,28 +22,28 @@ export class GameComponent implements OnInit {
   private readonly setColor: string = '#D28EFF';
   private readonly selectedColor: string = '#3f51b5';
   private readonly emptyColor: string = 'lightblue';
-  private canvasMaxHeight: number = 600;
+  private canvasMaxHeight = 600;
 
   private gameEngine: GameEngine;
   private simpleDice: Dice;
 
   private points: FieldPoint[] = [];
 
-  private selecting: boolean = false;
+  private selecting = false;
   private svg = null;
   private startPoint: FieldPoint = null;
 
-  public dice1: number = 0;
-  public dice2: number = 0;
-  public gameFinished: boolean = false;
-  public score: number = 0;
+  public dice1 = 0;
+  public dice2 = 0;
+  public gameFinished = false;
+  public score = 0;
 
   constructor(private gameStorageService: GameStorageService) {
     this.simpleDice = new SimpleDice(6);
     try {
       this.gameEngine = gameStorageService.restoreGame();
     } catch {
-      throw new Error("The game wasn't started.");
+      throw new Error('The game was not started.');
     }
 
     if (this.gameEngine) {
@@ -71,8 +71,10 @@ export class GameComponent implements OnInit {
       this.startPoint = null;
       this.selecting = false;
     });
-    this.points = this.castData();
-    this.render_field();
+    if (this.gameEngine) {
+      this.points = this.castData();
+      this.render_field();
+    }
   }
 
   /// get actual size of div for the game field
