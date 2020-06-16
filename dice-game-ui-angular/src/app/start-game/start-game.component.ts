@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { SimpleGameEngine } from '../../../../engine/simple-game-engine';
+import { SimpleGameEngine } from 'engine';
 import { GameStorageService } from '../services/game-storage-service';
 
 @Component({
