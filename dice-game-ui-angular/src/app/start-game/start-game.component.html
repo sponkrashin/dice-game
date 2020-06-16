@@ -1,1 +1,11 @@
 <h1>Start Game</h1>
+
+<mat-form-field class='m-1'>
+  <mat-label>Size of game field</mat-label>
+  <mat-select [(ngModel)]="size">
+    <mat-option *ngFor="let opt of sizeOptions" [value]="opt">
+      {{opt}} x {{opt}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<button mat-raised-button class='m-1' color="primary" (click)="startGame()">Start game</button>
