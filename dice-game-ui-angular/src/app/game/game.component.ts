@@ -31,7 +31,7 @@ export class GameComponent implements OnInit {
   private points: FieldPoint[] = [];
 
   private selecting = false;
-  private svg : any = null;
+  private svg: any = null;
   private startPoint: FieldPoint = null;
 
   dice1 = 0;
