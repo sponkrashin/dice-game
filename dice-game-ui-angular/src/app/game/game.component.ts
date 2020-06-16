@@ -26,7 +26,6 @@ export class GameComponent implements OnInit {
 
   private gameGuid: Guid;
   private gameEngine: GameEngine;
-  private simpleDice: Dice;
 
   private points: FieldPoint[] = [];
 
@@ -39,9 +38,7 @@ export class GameComponent implements OnInit {
   gameFinished = false;
   score = 0;
 
-  constructor(private router: Router, private route: ActivatedRoute, private gameStorageService: GameStorageService) {
-    this.simpleDice = new SimpleDice(6);
-  }
+  constructor(private router: Router, private route: ActivatedRoute, private gameStorageService: GameStorageService) {}
 
   ngOnInit(): void {
     this.gameGuid = Guid.parse(this.route.snapshot.paramMap.get('id'));
@@ -90,11 +87,11 @@ export class GameComponent implements OnInit {
   }
 
   public rollDices() {
-    const dices = this.simpleDice.roll();
+    const dices = this.gameEngine.rollDices();
     this.dice1 = dices[0];
     this.dice2 = dices[1];
     if (!this.fieldHasPlace()) {
-      this.gameEngine.finishGame();
+      this.gameEngine.skipTurn(null);
     }
 
     this.points = this.castData();
