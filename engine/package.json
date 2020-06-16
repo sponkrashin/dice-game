@@ -1,5 +1,12 @@
 {
   "name": "engine",
   "version": "1.0.0",
-  "main": "index.ts"
+  "main": "index.ts",
+  "scripts": {
+    "lint": "tslint \"**\\*.ts\" --exclude \"node_modules\\**\\*\""
+  },
+  "devDependencies": {
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.5"
+  }
 }
