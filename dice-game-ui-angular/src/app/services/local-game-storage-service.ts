@@ -21,11 +21,11 @@ export class LocalGameStorageService implements GameStorageService {
 
   restoreGame(guid: Guid): GameEngine {
     const fieldSize: number = JSON.parse(localStorage.getItem(guid.toString()));
-    let gameEngine = null; // temporary decision!!
-    if (fieldSize) {
-      gameEngine = new SimpleGameEngine(fieldSize, fieldSize);
+    // temporary decision!!
+    if (!fieldSize) {
+      return null;
     }
-    return gameEngine;
+    return new SimpleGameEngine(fieldSize, fieldSize);
   }
 
   removeGame(guid: Guid): void {
