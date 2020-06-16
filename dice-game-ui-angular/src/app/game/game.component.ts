@@ -31,7 +31,7 @@ export class GameComponent implements OnInit {
   private points: FieldPoint[] = [];
 
   private selecting = false;
-  private svg = null;
+  private svg : any = null;
   private startPoint: FieldPoint = null;
 
   dice1 = 0;
@@ -56,7 +56,7 @@ export class GameComponent implements OnInit {
         this.gameStorageService.saveGame(this.gameEngine, this.gameGuid);
         this.score = engine.players[0].score;
         this.points = this.castData();
-        this.render_field();
+        this.renderField();
       });
 
       this.gameEngine.registerOnGameFinished((engine) => {
@@ -78,7 +78,7 @@ export class GameComponent implements OnInit {
     });
     if (this.gameEngine) {
       this.points = this.castData();
-      this.render_field();
+      this.renderField();
     }
   }
 
@@ -86,7 +86,7 @@ export class GameComponent implements OnInit {
   @HostListener('window:resize')
   onResize() {
     this.svg.selectAll('rect').remove();
-    this.render_field();
+    this.renderField();
   }
 
   public rollDices() {
@@ -98,7 +98,7 @@ export class GameComponent implements OnInit {
     }
 
     this.points = this.castData();
-    this.render_field();
+    this.renderField();
   }
 
   private fieldHasPlace(): boolean {
@@ -179,7 +179,7 @@ export class GameComponent implements OnInit {
     return points;
   }
 
-  public render_field() {
+  public renderField() {
     const svgWidth = this.svg.node().getBoundingClientRect().width;
     const newWidth = Math.min(svgWidth, this.canvasMaxHeight);
     const margin = (svgWidth - newWidth) / 2;
@@ -218,11 +218,11 @@ export class GameComponent implements OnInit {
           set: false,
           selected: true,
         };
-        this.render_field();
+        this.renderField();
       })
       .on('mouseup', (d, i, nodes) => {
         const pointElement = d3.select(nodes[i]);
-        const selectedRect = this.select_area(pointElement);
+        const selectedRect = this.selectArea(pointElement);
         this.selecting = false;
 
         if (this.isFullRect(selectedRect)) {
@@ -246,7 +246,7 @@ export class GameComponent implements OnInit {
       })
       .on('mouseover', (d, i, nodes) => {
         const rect = d3.select(nodes[i]);
-        this.select_area(rect);
+        this.selectArea(rect);
       })
       .style('fill', this.emptyColor);
 
@@ -272,7 +272,7 @@ export class GameComponent implements OnInit {
     for (const point of this.points) {
       point.selected = false;
     }
-    this.render_field();
+    this.renderField();
   }
 
   public isFullRect(rect: Rect): boolean {
@@ -280,10 +280,10 @@ export class GameComponent implements OnInit {
     return selectedPointsCount === this.dice1 * this.dice2;
   }
 
-  public select_area(pointElement): Rect {
+  public selectArea(pointElement): Rect {
     if (this.selecting) {
       pointElement.style('fill', this.selectedColor);
-      return this.set_neighbors(this.startPoint, {
+      return this.setNeighbors(this.startPoint, {
         x: parseInt(pointElement.attr('data-point-x'), 10),
         y: parseInt(pointElement.attr('data-point-y'), 10),
         selected: false,
@@ -293,7 +293,7 @@ export class GameComponent implements OnInit {
     return null;
   }
 
-  public set_neighbors(startPoint: FieldPoint, endPoint: FieldPoint): Rect {
+  public setNeighbors(startPoint: FieldPoint, endPoint: FieldPoint): Rect {
     if (startPoint == null) {
       return;
     }
@@ -337,7 +337,7 @@ export class GameComponent implements OnInit {
       }
     }
 
-    this.render_field();
+    this.renderField();
     return new Rect(minY, minX, maxY - minY + 1, maxX - minX + 1); // inverted axis!!
   }
 }
