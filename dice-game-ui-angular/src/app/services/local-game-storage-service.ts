@@ -21,7 +21,6 @@ export class LocalGameStorageService implements GameStorageService {
 
   restoreGame(guid: Guid): GameEngine {
     const fieldSize: number = JSON.parse(localStorage.getItem(guid.toString()));
-    // temporary decision!!
     if (!fieldSize) {
       return null;
     }
