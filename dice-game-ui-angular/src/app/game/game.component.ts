@@ -1,9 +1,10 @@
 import { Component, OnInit, HostListener } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
+import { Guid } from 'guid-typescript';
 
 import { SimpleDice, GameEngine, Dice, Rect, Size } from 'engine';
 import { GameStorageService } from '../services/game-storage-service';
-import { LocalGameStorageService } from '../services/local-game-storage-service';
 
 interface FieldPoint {
   readonly x: number;
@@ -16,7 +17,6 @@ interface FieldPoint {
   selector: 'app-game',
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss'],
-  providers: [{ provide: GameStorageService, useClass: LocalGameStorageService }],
 })
 export class GameComponent implements OnInit {
   private readonly setColor: string = '#D28EFF';
@@ -24,6 +24,7 @@ export class GameComponent implements OnInit {
   private readonly emptyColor: string = 'lightblue';
   private canvasMaxHeight = 600;
 
+  private gameGuid: Guid;
   private gameEngine: GameEngine;
   private simpleDice: Dice;
 
@@ -33,22 +34,26 @@ export class GameComponent implements OnInit {
   private svg = null;
   private startPoint: FieldPoint = null;
 
-  public dice1 = 0;
-  public dice2 = 0;
-  public gameFinished = false;
-  public score = 0;
+  dice1 = 0;
+  dice2 = 0;
+  gameFinished = false;
+  score = 0;
 
-  constructor(private gameStorageService: GameStorageService) {
+  constructor(private router: Router, private route: ActivatedRoute, private gameStorageService: GameStorageService) {
     this.simpleDice = new SimpleDice(6);
+  }
+
+  ngOnInit(): void {
+    this.gameGuid = Guid.parse(this.route.snapshot.paramMap.get('id'));
     try {
-      this.gameEngine = gameStorageService.restoreGame();
+      this.gameEngine = this.gameStorageService.restoreGame(this.gameGuid);
     } catch {
       throw new Error('The game was not started.');
     }
 
     if (this.gameEngine) {
       this.gameEngine.registerOnStateChanged((engine) => {
-        gameStorageService.saveGame(this.gameEngine);
+        this.gameStorageService.saveGame(this.gameEngine, this.gameGuid);
         this.score = engine.players[0].score;
         this.points = this.castData();
         this.render_field();
@@ -56,14 +61,14 @@ export class GameComponent implements OnInit {
 
       this.gameEngine.registerOnGameFinished((engine) => {
         this.gameFinished = true;
-        gameStorageService.removeSavedGame(this.gameEngine);
+        this.gameStorageService.removeGame(this.gameGuid);
       });
 
       this.gameEngine.startGame();
+    } else {
+      this.router.navigate(['/']);
     }
-  }
 
-  ngOnInit(): void {
     this.svg = d3.select('#canv');
     // fixed issues with actions outside svg element
     d3.select('body').on('mouseup', () => {
@@ -78,7 +83,7 @@ export class GameComponent implements OnInit {
   }
 
   /// get actual size of div for the game field
-  @HostListener('window:resize', ['$event.target'])
+  @HostListener('window:resize')
   onResize() {
     this.svg.selectAll('rect').remove();
     this.render_field();

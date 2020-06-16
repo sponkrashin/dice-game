@@ -15,6 +15,7 @@ import { StartGameComponent } from './start-game/start-game.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { GameComponent } from './game/game.component';
 import { MainComponent } from './main/main.component';
+import { GameStorageService } from './services/game-storage-service';
 import { LocalGameStorageService } from './services/local-game-storage-service';
 
 @NgModule({
@@ -31,7 +32,7 @@ import { LocalGameStorageService } from './services/local-game-storage-service';
     MatSelectModule,
     MatSidenavModule,
   ],
-  providers: [],
+  providers: [{ provide: GameStorageService, useClass: LocalGameStorageService }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

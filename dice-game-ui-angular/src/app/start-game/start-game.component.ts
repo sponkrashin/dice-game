@@ -3,13 +3,11 @@ import { Router } from '@angular/router';
 
 import { SimpleGameEngine } from '../../../../engine/simple-game-engine';
 import { GameStorageService } from '../services/game-storage-service';
-import { LocalGameStorageService } from '../services/local-game-storage-service';
 
 @Component({
   selector: 'app-start-game',
   templateUrl: './start-game.component.html',
   styleUrls: ['./start-game.component.scss'],
-  providers: [{ provide: GameStorageService, useClass: LocalGameStorageService }],
 })
 export class StartGameComponent implements OnInit {
   public size: number;
@@ -26,7 +24,7 @@ export class StartGameComponent implements OnInit {
 
   startGame() {
     const newGame = new SimpleGameEngine(this.size, this.size);
-    this.gameStorageService.saveGame(newGame);
-    this.router.navigate(['/game']);
+    const gameGuid = this.gameStorageService.createGame(newGame);
+    this.router.navigate([`/game/${gameGuid}`]);
   }
 }

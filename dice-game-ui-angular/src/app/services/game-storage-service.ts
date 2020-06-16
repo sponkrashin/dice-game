@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Guid } from 'guid-typescript';
 import { GameEngine } from 'engine';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export abstract class GameStorageService {
-  abstract saveGame(gameEngine: GameEngine): void;
-  abstract restoreGame(): GameEngine;
-  abstract removeSavedGame(gameEngine: GameEngine): void;
+  abstract createGame(gameEngine: GameEngine): Guid;
+  abstract saveGame(gameEngine: GameEngine, guid: Guid): Guid;
+  abstract restoreGame(guid: Guid): GameEngine;
+  abstract removeGame(guid: Guid): void;
 }
