@@ -8,4 +8,5 @@ export abstract class GameStorageService {
   abstract saveGame(gameEngine: GameEngine, guid: Guid): Guid;
   abstract restoreGame(guid: Guid): GameEngine;
   abstract removeGame(guid: Guid): void;
+  abstract getAllSavedGames(): GameEngine[];
 }
