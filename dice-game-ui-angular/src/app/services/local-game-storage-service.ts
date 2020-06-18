@@ -19,12 +19,12 @@ export class LocalGameStorageService implements GameStorageService {
 
   saveGame(gameEngine: GameEngine, guid: Guid): Guid {
     const allSavedGames = this.getAllSavedGames();
-    if (!allSavedGames){
-      throw new Error("This game was not created in the store.");
+    if (!allSavedGames) {
+      throw new Error('This game was not created in the store.');
     }
     const curSavedGame = allSavedGames.filter(savedGame => savedGame.guid === guid.toString());
     if (!curSavedGame) {
-      throw new Error("This game was not created in the store.");
+      throw new Error('This game was not created in the store.');
     }
     curSavedGame[0].gameEngine = gameEngine;
     localStorage.setItem(this.savedGamesKey, JSON.stringify(curSavedGame));
@@ -33,7 +33,7 @@ export class LocalGameStorageService implements GameStorageService {
 
   restoreGame(guid: Guid): GameEngine {
     const allSavedGames = this.getAllSavedGames();
-    if (!allSavedGames){
+    if (!allSavedGames) {
       return null;
     }
     const curSavedGame = allSavedGames.filter(savedGame => savedGame.guid === guid.toString());
@@ -44,7 +44,7 @@ export class LocalGameStorageService implements GameStorageService {
   }
 
   getAllSavedGames(): SavedGameEngine[] {
-    let curSavedGames: SavedGameEngine[]  = [];
+    let curSavedGames: SavedGameEngine[] = [];
     const savedGames = localStorage.getItem(this.savedGamesKey);
     if (savedGames) {
       curSavedGames = (JSON.parse(savedGames) as SavedGameEngine[]) ?? [];
@@ -55,7 +55,7 @@ export class LocalGameStorageService implements GameStorageService {
   removeGame(guid: Guid): void {
     let curSavedGames = this.getAllSavedGames();
     const curSavedGame = curSavedGames.filter(savedGame => savedGame.guid === guid.toString());
-    if (!curSavedGame){
+    if (!curSavedGame) {
       throw new Error(`A game with id: ${guid.toString()} was not found.`);
     }
     const index = curSavedGames.indexOf(curSavedGame[0]);
