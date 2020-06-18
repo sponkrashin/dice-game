@@ -1,67 +1,67 @@
 import { Injectable } from '@angular/core';
 import { Guid } from 'guid-typescript';
-import { GameEngine, SimpleGameEngine, Size } from 'engine';
-import { GameStorageService } from './game-storage-service';
+import { GameEngine, SimpleGameEngine } from 'engine';
+import { GameStorageService, SavedGameEngine } from './game-storage-service';
 
 @Injectable()
 export class LocalGameStorageService implements GameStorageService {
   private readonly savedGamesKey = 'saved-games';
 
   createGame(gameEngine: GameEngine): Guid {
-    const guid = Guid.create();
-    localStorage.setItem(guid.toString(), gameEngine.fieldSize.width.toString());
-    this.addGameToSaved(guid);
-    return guid;
+    const savedGameEngine = new SavedGameEngine(gameEngine);
+    const curSavedGames = this.getAllSavedGames();
+    if (curSavedGames.filter(savedGame => savedGame.guid === savedGameEngine.guid).length === 0) {
+      curSavedGames.push(savedGameEngine);
+      localStorage.setItem(this.savedGamesKey, JSON.stringify(curSavedGames));
+    }
+    return Guid.parse(savedGameEngine.guid);
   }
 
   saveGame(gameEngine: GameEngine, guid: Guid): Guid {
-    if (!localStorage.getItem(guid.toString())) {
-      throw new Error('The saved game was not found in the store');
+    const allSavedGames = this.getAllSavedGames();
+    if (!allSavedGames){
+      throw new Error("This game was not created in the store.");
     }
-    localStorage.setItem(guid.toString(), gameEngine.fieldSize.width.toString());
+    const curSavedGame = allSavedGames.filter(savedGame => savedGame.guid === guid.toString());
+    if (!curSavedGame) {
+      throw new Error("This game was not created in the store.");
+    }
+    curSavedGame[0].gameEngine = gameEngine;
+    localStorage.setItem(this.savedGamesKey, JSON.stringify(curSavedGame));
     return guid;
   }
 
   restoreGame(guid: Guid): GameEngine {
-    const fieldSize: number = JSON.parse(localStorage.getItem(guid.toString()));
-    if (!fieldSize) {
+    const allSavedGames = this.getAllSavedGames();
+    if (!allSavedGames){
       return null;
     }
-    return new SimpleGameEngine(fieldSize, fieldSize);
+    const curSavedGame = allSavedGames.filter(savedGame => savedGame.guid === guid.toString());
+    if (!curSavedGame) {
+      return null;
+    }
+    return new SimpleGameEngine(curSavedGame[0].gameEngine.fieldSize.width, curSavedGame[0].gameEngine.fieldSize.height);
+  }
+
+  getAllSavedGames(): SavedGameEngine[] {
+    let curSavedGames: SavedGameEngine[]  = [];
+    const savedGames = localStorage.getItem(this.savedGamesKey);
+    if (savedGames) {
+      curSavedGames = (JSON.parse(savedGames) as SavedGameEngine[]) ?? [];
+    }
+    return curSavedGames;
   }
 
   removeGame(guid: Guid): void {
-    localStorage.removeItem(guid.toString());
-    this.removeGameFromSaved(guid);
-  }
-
-  getAllSavedGames(): GameEngine[] {
-    const savedGameEngines = this.getSavedGameGuids().map((guid) => this.restoreGame(guid));
-    return savedGameEngines;
-  }
-
-  private addGameToSaved(guid: Guid): void {
-    const curSavedGames = this.getSavedGameGuids();
-    if (!curSavedGames.includes(guid)) {
-      curSavedGames.push(guid);
-      localStorage.setItem(this.savedGamesKey, JSON.stringify(curSavedGames.map((g) => g.toString())));
+    let curSavedGames = this.getAllSavedGames();
+    const curSavedGame = curSavedGames.filter(savedGame => savedGame.guid === guid.toString());
+    if (!curSavedGame){
+      throw new Error(`A game with id: ${guid.toString()} was not found.`);
     }
-  }
-
-  private removeGameFromSaved(guid: Guid): void {
-    const curSavedGames = this.getSavedGameGuids();
-    const index = curSavedGames.indexOf(guid);
+    const index = curSavedGames.indexOf(curSavedGame[0]);
     if (index > -1) {
-      curSavedGames.splice(index, 1);
+      curSavedGames = curSavedGames.splice(index, 1);
     }
-    localStorage.setItem(this.savedGamesKey, JSON.stringify(curSavedGames.map((g) => g.toString())));
-  }
-
-  private getSavedGameGuids(): Guid[] {
-    let curSavedGames = [];
-    if (localStorage.getItem(this.savedGamesKey)) {
-      curSavedGames = (JSON.parse(localStorage.getItem(this.savedGamesKey)) as Guid[]) ?? [];
-    }
-    return curSavedGames;
+    localStorage.setItem(this.savedGamesKey, JSON.stringify(curSavedGames));
   }
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { GameEngine } from 'engine';
-import { GameStorageService } from '../services/game-storage-service';
+import { GameStorageService, SavedGameEngine } from '../services/game-storage-service';
 
 
 @Component({
@@ -10,7 +9,7 @@ import { GameStorageService } from '../services/game-storage-service';
   styleUrls: ['./saved-games.component.scss'],
 })
 export class SavedGamesComponent implements OnInit {
-  games: GameEngine[];
+  games: SavedGameEngine[];
 
   constructor(private gameStorageService: GameStorageService) {}
 

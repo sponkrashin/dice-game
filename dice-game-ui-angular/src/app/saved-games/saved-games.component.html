@@ -1,5 +1,10 @@
 <p>saved-games works!</p>
 
 <ul>
-    <li *ngFor='let ge of games'>{{ge.fieldSize.width}}</li>
+    <li *ngFor='let ge of games'>
+        <a [routerLink]="['/game', ge.guid]">
+            Single game {{ge.gameEngine.fieldSize.width}} x {{ge.gameEngine.fieldSize.height}} from {{ge.creationDate|date:"dd.MM.yyyy"}}
+        </a>
+        <button mat-button><i class="material-icons red md-36">close</i></button>
+    </li>
 </ul>

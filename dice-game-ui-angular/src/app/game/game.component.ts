@@ -47,7 +47,6 @@ export class GameComponent implements OnInit {
     } catch {
       throw new Error('The game was not started.');
     }
-
     if (this.gameEngine) {
       this.gameEngine.registerOnStateChanged((engine) => {
         this.gameStorageService.saveGame(this.gameEngine, this.gameGuid);
