@@ -4,7 +4,6 @@ import { Guid } from 'guid-typescript';
 
 import { GameStorageService, SavedGameEngine } from '../services/game-storage-service';
 
-
 @Component({
   selector: 'app-saved-games',
   templateUrl: './saved-games.component.html',
