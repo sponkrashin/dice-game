@@ -1,10 +1,24 @@
-<p>saved-games works!</p>
+<h1 align="center" class="text-muted">Saved games</h1>
 
-<ul>
-    <li *ngFor='let ge of games'>
-        <a [routerLink]="['/game', ge.guid]">
-            Single game {{ge.gameEngine.fieldSize.width}} x {{ge.gameEngine.fieldSize.height}} from {{ge.creationDate|date:"dd.MM.yyyy"}}
-        </a>
-        <button mat-button><i class="material-icons red md-36">close</i></button>
-    </li>
-</ul>
+<div *ngIf="games.length>0; else noSavedGames">
+    <mat-card class="m-1" *ngFor="let ge of games">
+        <mat-card-header>
+            <mat-card-title>
+                <button mat-flat-button [routerLink]="['/game', ge.guid]">
+                    Single game {{ge.gameEngine.fieldSize.width}} x {{ge.gameEngine.fieldSize.height}} from {{ge.creationDate|date:"dd.MM.yyyy"}}
+                </button>
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-actions align="end">
+            <button mat-mini-fab color="primary" align="start" [routerLink]="['/game', ge.guid]" aria-label="Continue" class="m-1">
+                <mat-icon>login</mat-icon>
+            </button>
+            <button mat-mini-fab color="accent" (click)="removeSavedGame(ge.guid)" aria-label="Remove" class="m-1">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</div>
+<ng-template #noSavedGames>
+    <p class="text-muted">You don't have any saved games yet.</p>
+</ng-template>

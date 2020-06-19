@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { Guid } from 'guid-typescript';
+
 import { GameStorageService, SavedGameEngine } from '../services/game-storage-service';
 
 
@@ -11,9 +13,16 @@ import { GameStorageService, SavedGameEngine } from '../services/game-storage-se
 export class SavedGamesComponent implements OnInit {
   games: SavedGameEngine[];
 
-  constructor(private gameStorageService: GameStorageService) { }
+  constructor(private gameStorageService: GameStorageService) {}
 
   ngOnInit(): void {
     this.games = this.gameStorageService.getAllSavedGames();
+  }
+
+  removeSavedGame(guid: Guid) {
+    alert(guid);
+    this.gameStorageService.removeGame(guid);
+    this.games = this.gameStorageService.getAllSavedGames();
+    alert(this.games);
   }
 }

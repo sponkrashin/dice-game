@@ -8,6 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -32,6 +34,8 @@ import { SavedGamesComponent } from './saved-games/saved-games.component';
     MatFormFieldModule,
     MatSelectModule,
     MatSidenavModule,
+    MatCardModule,
+    MatIconModule,
   ],
   providers: [{ provide: GameStorageService, useClass: LocalGameStorageService }],
   bootstrap: [AppComponent],
