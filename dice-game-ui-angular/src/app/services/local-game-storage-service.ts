@@ -56,7 +56,7 @@ export class LocalGameStorageService implements GameStorageService {
   }
 
   removeGame(guid: Guid): void {
-    let curSavedGames = this.getAllSavedGames();
+    const curSavedGames = this.getAllSavedGames();
     const curSavedGame = curSavedGames.filter((savedGame) => savedGame.guid === guid.toString());
     if (!curSavedGame) {
       throw new Error(`A game with id: ${guid.toString()} was not found.`);
