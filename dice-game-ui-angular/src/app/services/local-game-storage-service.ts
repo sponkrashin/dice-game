@@ -27,7 +27,7 @@ export class LocalGameStorageService implements GameStorageService {
       throw new Error('This game was not created in the store.');
     }
     curSavedGame[0].gameEngine = gameEngine;
-    localStorage.setItem(this.savedGamesKey, JSON.stringify(curSavedGame));
+    localStorage.setItem(this.savedGamesKey, JSON.stringify(allSavedGames));
     return guid;
   }
 
