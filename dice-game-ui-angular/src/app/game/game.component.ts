@@ -38,7 +38,7 @@ export class GameComponent implements OnInit {
   gameFinished = false;
   score = 0;
 
-  constructor(private router: Router, private route: ActivatedRoute, private gameStorageService: GameStorageService) { }
+  constructor(private router: Router, private route: ActivatedRoute, private gameStorageService: GameStorageService) {}
 
   ngOnInit(): void {
     this.gameGuid = Guid.parse(this.route.snapshot.paramMap.get('id'));
@@ -47,6 +47,7 @@ export class GameComponent implements OnInit {
     } catch {
       throw new Error('The game was not started.');
     }
+
     if (this.gameEngine) {
       this.gameEngine.registerOnStateChanged((engine) => {
         this.gameStorageService.saveGame(this.gameEngine, this.gameGuid);
