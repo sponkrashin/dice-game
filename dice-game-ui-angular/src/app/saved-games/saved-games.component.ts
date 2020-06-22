@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
 import { Guid } from 'guid-typescript';
-
 import { GameStorageService, SavedGameEngine } from '../services/game-storage-service';
 
 @Component({
@@ -15,13 +13,17 @@ export class SavedGamesComponent implements OnInit {
   constructor(private gameStorageService: GameStorageService) {}
 
   ngOnInit(): void {
-    this.games = this.gameStorageService.getAllSavedGames();
+    this.setAllGameEngines();
   }
 
   removeSavedGame(guid: Guid) {
-    alert(guid);
     this.gameStorageService.removeGame(guid);
-    this.games = this.gameStorageService.getAllSavedGames();
-    alert(this.games);
+    this.setAllGameEngines();
+  }
+
+  private setAllGameEngines() {
+    this.games = this.gameStorageService
+      .getAllSavedGames()
+      .sort((game1, game2) => (game1.creationDate < game2.creationDate ? 1 : -1));
   }
 }

@@ -19,14 +19,14 @@ export class LocalGameStorageService implements GameStorageService {
 
   saveGame(gameEngine: GameEngine, guid: Guid): Guid {
     const allSavedGames = this.getAllSavedGames();
-    if (!allSavedGames) {
+    if (allSavedGames.length === 0) {
       throw new Error('This game was not created in the store.');
     }
-    const curSavedGame = allSavedGames.filter((savedGame) => savedGame.guid === guid.toString());
+    const curSavedGame = allSavedGames.find((savedGame) => savedGame.guid === guid.toString());
     if (!curSavedGame) {
       throw new Error('This game was not created in the store.');
     }
-    curSavedGame[0].gameEngine = gameEngine;
+    curSavedGame.gameEngine = gameEngine;
     localStorage.setItem(this.savedGamesKey, JSON.stringify(allSavedGames));
     return guid;
   }
@@ -47,24 +47,17 @@ export class LocalGameStorageService implements GameStorageService {
   }
 
   getAllSavedGames(): SavedGameEngine[] {
-    let curSavedGames: SavedGameEngine[] = [];
     const savedGames = localStorage.getItem(this.savedGamesKey);
-    if (savedGames) {
-      curSavedGames = (JSON.parse(savedGames) as SavedGameEngine[]) ?? [];
-    }
-    return curSavedGames.sort((game1, game2) => (game1.creationDate < game2.creationDate ? 1 : -1));
+    return savedGames ? (JSON.parse(savedGames) as SavedGameEngine[]) : [];
   }
 
   removeGame(guid: Guid): void {
     const curSavedGames = this.getAllSavedGames();
-    const curSavedGame = curSavedGames.filter((savedGame) => savedGame.guid === guid.toString());
-    if (!curSavedGame) {
+    const curSavedGameIndex = curSavedGames.findIndex((savedGame) => savedGame.guid === guid.toString());
+    if (curSavedGameIndex === -1) {
       throw new Error(`A game with id: ${guid.toString()} was not found.`);
     }
-    const index = curSavedGames.indexOf(curSavedGame[0]);
-    if (index > -1) {
-      curSavedGames.splice(index, 1);
-    }
+    curSavedGames.splice(curSavedGameIndex, 1);
     localStorage.setItem(this.savedGamesKey, JSON.stringify(curSavedGames));
   }
 }

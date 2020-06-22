@@ -3,7 +3,6 @@ import { Guid } from 'guid-typescript';
 import { GameEngine } from 'engine';
 
 export class SavedGameEngine {
-
   constructor(gameEngine: GameEngine) {
     this.gameEngine = gameEngine;
     this.guid = Guid.create().toString();
