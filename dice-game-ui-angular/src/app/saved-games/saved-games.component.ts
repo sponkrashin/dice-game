@@ -16,6 +16,10 @@ export class SavedGamesComponent implements OnInit {
     this.setAllGameEngines();
   }
 
+  getGameLink(gameEngine: SavedGameEngine) {
+    return ['/game', gameEngine.guid];
+  }
+
   removeSavedGame(guid: Guid) {
     this.gameStorageService.removeGame(guid);
     this.setAllGameEngines();

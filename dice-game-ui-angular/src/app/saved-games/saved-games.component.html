@@ -4,13 +4,13 @@
     <mat-card class="m-1" *ngFor="let ge of games">
         <mat-card-header>
             <mat-card-title>
-                <button mat-flat-button [routerLink]="['/game', ge.guid]">
+                <button mat-flat-button [routerLink]="getGameLink(ge)">
                     Single game {{ge.gameEngine.fieldSize.width}} x {{ge.gameEngine.fieldSize.height}} from {{ge.creationDate|date:'dd.MM.yyyy'}}
                 </button>
             </mat-card-title>
         </mat-card-header>
         <mat-card-actions align="end">
-            <button mat-mini-fab color="primary" align="start" [routerLink]="['/game', ge.guid]" aria-label="Continue" class="m-1">
+            <button mat-mini-fab color="primary" align="start" [routerLink]="getGameLink(ge)" aria-label="Continue" class="m-1">
                 <mat-icon>login</mat-icon>
             </button>
             <button mat-mini-fab color="accent" (click)="removeSavedGame(ge.guid)" aria-label="Remove" class="m-1">

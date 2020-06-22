@@ -7,26 +7,33 @@ import { GameStorageService, SavedGameEngine } from './game-storage-service';
 export class LocalGameStorageService implements GameStorageService {
   private readonly savedGamesKey = 'saved-games';
 
-  createGame(gameEngine: GameEngine): Guid {
-    const savedGameEngine = new SavedGameEngine(gameEngine);
-    const curSavedGames = this.getAllSavedGames();
-    if (curSavedGames.filter((savedGame) => savedGame.guid === savedGameEngine.guid).length === 0) {
-      curSavedGames.push(savedGameEngine);
-      localStorage.setItem(this.savedGamesKey, JSON.stringify(curSavedGames));
-    }
-    return Guid.parse(savedGameEngine.guid);
-  }
-
-  saveGame(gameEngine: GameEngine, guid: Guid): Guid {
+  saveGame(gameEngine: GameEngine, guid: Guid = null): Guid {
     const allSavedGames = this.getAllSavedGames();
-    if (allSavedGames.length === 0) {
+    if (!guid && allSavedGames.length === 0) {
       throw new Error('This game was not created in the store.');
     }
-    const curSavedGame = allSavedGames.find((savedGame) => savedGame.guid === guid.toString());
-    if (!curSavedGame) {
-      throw new Error('This game was not created in the store.');
+
+    let savedGame: SavedGameEngine = allSavedGames.find(
+      (sg) => sg.guid === (guid ? guid.toString() : Guid.EMPTY)
+    );
+    // if saving previously saved game
+    if (guid) {
+      if (!savedGame) {
+        throw new Error('This game was not created in the store.');
+      }
+      savedGame.gameEngine = gameEngine;
+
+      // if saving a new game
+    } else {
+      if (savedGame) {
+        throw new Error('This game was previously created in the store.');
+      }
+
+      savedGame = new SavedGameEngine(gameEngine);
+      allSavedGames.push(savedGame);
+      guid = Guid.parse(savedGame.guid);
     }
-    curSavedGame.gameEngine = gameEngine;
+
     localStorage.setItem(this.savedGamesKey, JSON.stringify(allSavedGames));
     return guid;
   }

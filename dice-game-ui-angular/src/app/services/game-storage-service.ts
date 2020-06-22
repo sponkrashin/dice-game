@@ -16,9 +16,11 @@ export class SavedGameEngine {
 
 @Injectable()
 export abstract class GameStorageService {
-  abstract createGame(gameEngine: GameEngine): Guid;
-  abstract saveGame(gameEngine: GameEngine, guid: Guid): Guid;
   abstract restoreGame(guid: Guid): GameEngine;
   abstract removeGame(guid: Guid): void;
   abstract getAllSavedGames(): SavedGameEngine[];
+
+  saveGame(gameEngine: GameEngine, guid: Guid = null): Guid {
+    throw new Error('The method was not implemented');
+  }
 }
