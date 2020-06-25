@@ -5,16 +5,19 @@ import { GameEngine } from 'engine';
 export class LocalStatisticsService extends StatisticsService {
   private statisticsKey: string = 'statistics';
 
-  getStatistics(gameGuid: Guid): StatisticsData {
+  getStatistics(gameGuid: Guid, playerId: string): StatisticsData {
     const allStats = this.getAllStatistics();
     if (allStats.length === 0) {
       throw new Error('Not any saved statistics data for this game.');
     }
 
-    const stat = allStats.filter((s) => s.gameGuid === gameGuid.toString());
+    const stat = allStats.filter((s) => s.gameGuid === gameGuid.toString() && s.playerId === playerId);
     if (!stat) {
-      throw new Error(`Statistics for the game with id ${gameGuid.toString()} wasn't found.`);
+      throw new Error(
+        `Statistics for the game with id ${gameGuid.toString()} and player with id ${playerId} wasn't found.`
+      );
     }
+
     return stat[0];
   }
 
@@ -33,13 +36,18 @@ export class LocalStatisticsService extends StatisticsService {
           } was already saved.`
         );
       }
-      playerStat = new StatisticsData(gameGuid.toString(), player.playerId, player.score, 'single game', 0);
+      playerStat = new StatisticsData(
+        gameGuid.toString(),
+        player.playerId,
+        player.score,
+        `Single game ${gameEngine.fieldSize.width} x ${gameEngine.fieldSize.height}`
+      );
       allStats.push(playerStat);
     }
     localStorage.setItem(this.statisticsKey, JSON.stringify(allStats));
   }
 
-  private getAllStatistics(): StatisticsData[] {
+  getAllStatistics(): StatisticsData[] {
     const statistics = localStorage.getItem(this.statisticsKey);
     return statistics ? (JSON.parse(statistics) as StatisticsData[]) : [];
   }

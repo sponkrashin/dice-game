@@ -7,19 +7,20 @@ export class StatisticsData {
   playerId: string;
   totalScore: number;
   gameType: string;
-  gameTimeSecs: number;
+  finishedDate: Date;
 
-  constructor(gameGuid: string, playerId: string, totalScore: number, gameType: string, gameTimeSecs: number) {
+  constructor(gameGuid: string, playerId: string, totalScore: number, gameType: string) {
     this.gameGuid = gameGuid;
     this.playerId = playerId;
     this.totalScore = totalScore;
     this.gameType = gameType;
-    this.gameTimeSecs = gameTimeSecs;
+    this.finishedDate = new Date();
   }
 }
 
 @Injectable()
 export abstract class StatisticsService {
-  abstract getStatistics(gameGuid: Guid): StatisticsData;
+  abstract getStatistics(gameGuid: Guid, playerId: string): StatisticsData;
   abstract saveStatistics(gameGuid: Guid, gameEngine: GameEngine): void;
+  abstract getAllStatistics(): StatisticsData[];
 }
