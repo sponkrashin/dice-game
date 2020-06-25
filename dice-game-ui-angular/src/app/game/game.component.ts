@@ -5,6 +5,7 @@ import { Guid } from 'guid-typescript';
 
 import { SimpleDice, GameEngine, Dice, Rect, Size } from 'engine';
 import { GameStorageService } from '../services/game-storage-service';
+import { StatisticsService } from '../services/statistics-service';
 
 interface FieldPoint {
   readonly x: number;
@@ -38,7 +39,12 @@ export class GameComponent implements OnInit {
   gameFinished = false;
   score = 0;
 
-  constructor(private router: Router, private route: ActivatedRoute, private gameStorageService: GameStorageService) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private gameStorageService: GameStorageService,
+    private statisticsService: StatisticsService
+  ) {}
 
   ngOnInit(): void {
     this.gameGuid = Guid.parse(this.route.snapshot.paramMap.get('id'));
@@ -59,6 +65,7 @@ export class GameComponent implements OnInit {
       this.gameEngine.registerOnGameFinished((engine) => {
         this.gameFinished = true;
         this.gameStorageService.removeGame(this.gameGuid);
+        this.statisticsService.saveStatistics(this.gameGuid, this.gameEngine);
       });
 
       this.gameEngine.startGame();
