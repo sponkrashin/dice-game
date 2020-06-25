@@ -3,7 +3,7 @@ import { StatisticsService, StatisticsData } from './statistics-service';
 import { GameEngine } from 'engine';
 
 export class LocalStatisticsService extends StatisticsService {
-  private statisticsKey: string = 'statistics';
+  private statisticsKey = 'statistics';
 
   getStatistics(gameGuid: Guid, playerId: string): StatisticsData {
     const allStats = this.getAllStatistics();
