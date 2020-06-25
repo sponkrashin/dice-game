@@ -1,0 +1,29 @@
+<h1 align="center" class="text-muted">Statistics</h1>
+<div *ngIf="statistics.length>0; else noStatistics">
+    <table mat-table [dataSource]="statistics" class="mat-elevation-z8 table-width-100">
+
+        <!-- Player Column -->
+        <ng-container matColumnDef="playerId">
+            <th mat-header-cell *matHeaderCellDef>Player</th>
+            <td mat-cell *matCellDef="let element"> {{element.playerId}} </td>
+        </ng-container>
+
+        <!-- Game Type Column -->
+        <ng-container matColumnDef="gameType">
+            <th mat-header-cell *matHeaderCellDef>Game Type</th>
+            <td mat-cell *matCellDef="let element"> {{element.gameType}} </td>
+        </ng-container>
+
+        <!-- Score Column -->
+        <ng-container matColumnDef="score">
+            <th mat-header-cell *matHeaderCellDef>Score</th>
+            <td mat-cell *matCellDef="let element"> {{element.totalScore}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>
+<ng-template #noStatistics>
+    <p class="text-muted">You don't have any finished games yet.</p>
+</ng-template>
