@@ -3,15 +3,15 @@ import { Guid } from 'guid-typescript';
 import { GameEngine } from 'engine';
 
 export class SavedGameEngine {
+  gameEngine: GameEngine;
+  readonly guid: string;
+  readonly creationDate: Date;
+
   constructor(gameEngine: GameEngine) {
     this.gameEngine = gameEngine;
     this.guid = Guid.create().toString();
     this.creationDate = new Date();
   }
-
-  gameEngine: GameEngine;
-  readonly guid: string;
-  readonly creationDate: Date;
 }
 
 @Injectable()
