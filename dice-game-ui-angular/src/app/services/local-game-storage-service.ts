@@ -13,9 +13,7 @@ export class LocalGameStorageService implements GameStorageService {
       throw new Error('This game was not created in the store.');
     }
 
-    let savedGame: SavedGameEngine = allSavedGames.find(
-      (sg) => sg.guid === (guid ? guid.toString() : Guid.EMPTY)
-    );
+    let savedGame: SavedGameEngine = allSavedGames.find((sg) => sg.guid === guid?.toString());
     // if saving previously saved game
     if (guid) {
       if (!savedGame) {
