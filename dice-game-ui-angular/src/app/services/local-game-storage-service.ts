@@ -33,9 +33,13 @@ export class LocalGameStorageService implements GameStorageService {
   }
 
   restoreGame(guid: Guid): GameEngine {
+    if (!guid) {
+      throw new Error('A guid of the game should be defined.');
+    }
+
     const allSavedGames = this.getAllSavedGames();
     if (allSavedGames.length === 0) {
-      return null;
+      throw new Error('There are no saved games.');
     }
 
     const curSavedGame = allSavedGames.find(sg => sg.guid === guid.toString());
@@ -50,7 +54,14 @@ export class LocalGameStorageService implements GameStorageService {
   }
 
   removeGame(guid: Guid): void {
+    if (!guid) {
+      throw new Error('A guid of the game should be defined.');
+    }
+
     const curSavedGames = this.getAllSavedGames();
+    if (curSavedGames.length === 0) {
+      throw new Error('There are no saved games.');
+    }
     const curSavedGameIndex = curSavedGames.findIndex((savedGame) => savedGame.guid === guid.toString());
     if (curSavedGameIndex === -1) {
       throw new Error(`A game with id: ${guid.toString()} was not found.`);
