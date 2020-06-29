@@ -23,10 +23,6 @@ export class LocalGameStorageService implements GameStorageService {
 
       // if saving a new game
     } else {
-      if (savedGame) {
-        throw new Error('This game was previously created in the store.');
-      }
-
       savedGame = new SavedGameEngine(gameEngine);
       allSavedGames.push(savedGame);
       guid = Guid.parse(savedGame.guid);
