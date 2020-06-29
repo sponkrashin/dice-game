@@ -37,14 +37,11 @@ export class LocalGameStorageService implements GameStorageService {
     if (allSavedGames.length === 0) {
       return null;
     }
-    const curSavedGame = allSavedGames.filter((savedGame) => savedGame.guid === guid.toString());
-    if (curSavedGame.length === 0) {
-      return null;
-    }
-    return new SimpleGameEngine(
-      curSavedGame[0].gameEngine.fieldSize.width,
-      curSavedGame[0].gameEngine.fieldSize.height
-    );
+
+    const curSavedGame = allSavedGames.find(sg => sg.guid === guid.toString());
+    return curSavedGame
+      ? new SimpleGameEngine(curSavedGame.gameEngine.fieldSize.width, curSavedGame.gameEngine.fieldSize.height)
+      : null;
   }
 
   getAllSavedGames(): SavedGameEngine[] {
