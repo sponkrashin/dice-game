@@ -8,6 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,9 +19,10 @@ import { GameComponent } from './game/game.component';
 import { MainComponent } from './main/main.component';
 import { GameStorageService } from './services/game-storage-service';
 import { LocalGameStorageService } from './services/local-game-storage-service';
+import { SavedGamesComponent } from './saved-games/saved-games.component';
 
 @NgModule({
-  declarations: [AppComponent, StartGameComponent, NavMenuComponent, GameComponent, MainComponent],
+  declarations: [AppComponent, StartGameComponent, NavMenuComponent, GameComponent, MainComponent, SavedGamesComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -31,6 +34,8 @@ import { LocalGameStorageService } from './services/local-game-storage-service';
     MatFormFieldModule,
     MatSelectModule,
     MatSidenavModule,
+    MatCardModule,
+    MatIconModule,
   ],
   providers: [{ provide: GameStorageService, useClass: LocalGameStorageService }],
   bootstrap: [AppComponent],
