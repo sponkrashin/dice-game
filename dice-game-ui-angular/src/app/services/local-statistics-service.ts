@@ -13,9 +13,7 @@ export class LocalStatisticsService extends StatisticsService {
 
     const stats = allStats.filter((s) => s.gameGuid === gameGuid.toString());
     if (stats.length === 0) {
-      throw new Error(
-        `Statistics for the game with id ${gameGuid.toString()} and wasn't found.`
-      );
+      throw new Error(`Statistics for the game with id ${gameGuid.toString()} and wasn't found.`);
     }
 
     return stats;
@@ -28,9 +26,7 @@ export class LocalStatisticsService extends StatisticsService {
 
     const stats = allStats.filter((s) => s.playerId === playerId);
     if (stats.length === 0) {
-      throw new Error(
-        `Statistics for the player with id ${playerId} wasn't found.`
-      );
+      throw new Error(`Statistics for the player with id ${playerId} wasn't found.`);
     }
 
     return stats;
