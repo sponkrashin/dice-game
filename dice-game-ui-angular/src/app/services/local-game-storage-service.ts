@@ -38,10 +38,11 @@ export class LocalGameStorageService implements GameStorageService {
       throw new Error('There are no saved games.');
     }
 
-    const curSavedGame = allSavedGames.find(sg => sg.guid === guid.toString());
-    return curSavedGame
-      ? new SimpleGameEngine(curSavedGame.gameEngine.fieldSize.width, curSavedGame.gameEngine.fieldSize.height)
-      : null;
+    const curSavedGame = allSavedGames.find((sg) => sg.guid === guid.toString());
+    if (!curSavedGame) {
+      throw new Error(`A game with the guid ${guid.toString()} wasn't found in the stored games`);
+    }
+    return new SimpleGameEngine(curSavedGame.gameEngine.fieldSize.width, curSavedGame.gameEngine.fieldSize.height);
   }
 
   getAllSavedGames(): SavedGameEngine[] {
