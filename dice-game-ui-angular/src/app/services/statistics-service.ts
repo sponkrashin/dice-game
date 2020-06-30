@@ -21,6 +21,8 @@ export class StatisticsData {
 @Injectable()
 export abstract class StatisticsService {
   abstract getStatistics(gameGuid: Guid, playerId: string): StatisticsData;
+  abstract getGameStatistics(gameGuid: Guid): StatisticsData[];
+  abstract getPlayerStatistics(playerId: string): StatisticsData[];
   abstract saveStatistics(gameGuid: Guid, gameEngine: GameEngine): void;
   abstract getAllStatistics(): StatisticsData[];
 }

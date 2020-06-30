@@ -5,6 +5,23 @@ import { GameEngine } from 'engine';
 export class LocalStatisticsService extends StatisticsService {
   private statisticsKey = 'statistics';
 
+  getGameStatistics(gameGuid: Guid): StatisticsData[] {
+    const allStats = this.getAllStatistics();
+    if (allStats.length === 0) {
+      throw new Error('Not any saved statistics data for this game.');
+    }
+
+    return allStats.filter((s) => s.gameGuid === gameGuid.toString());
+  }
+  getPlayerStatistics(playerId: string): StatisticsData[] {
+    const allStats = this.getAllStatistics();
+    if (allStats.length === 0) {
+      throw new Error('Not any saved statistics data for this game.');
+    }
+
+    return allStats.filter((s) => s.playerId === playerId);
+  }
+
   getStatistics(gameGuid: Guid, playerId: string): StatisticsData {
     const allStats = this.getAllStatistics();
     if (allStats.length === 0) {
