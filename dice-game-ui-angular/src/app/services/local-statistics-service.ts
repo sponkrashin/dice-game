@@ -11,7 +11,14 @@ export class LocalStatisticsService extends StatisticsService {
       throw new Error('Not any saved statistics data for this game.');
     }
 
-    return allStats.filter((s) => s.gameGuid === gameGuid.toString());
+    const stats = allStats.filter((s) => s.gameGuid === gameGuid.toString());
+    if (stats.length === 0) {
+      throw new Error(
+        `Statistics for the game with id ${gameGuid.toString()} and wasn't found.`
+      );
+    }
+
+    return stats;
   }
   getPlayerStatistics(playerId: string): StatisticsData[] {
     const allStats = this.getAllStatistics();
@@ -19,7 +26,14 @@ export class LocalStatisticsService extends StatisticsService {
       throw new Error('Not any saved statistics data for this game.');
     }
 
-    return allStats.filter((s) => s.playerId === playerId);
+    const stats = allStats.filter((s) => s.playerId === playerId);
+    if (stats.length === 0) {
+      throw new Error(
+        `Statistics for the player with id ${playerId} wasn't found.`
+      );
+    }
+
+    return stats;
   }
 
   getStatistics(gameGuid: Guid, playerId: string): StatisticsData {
@@ -28,14 +42,14 @@ export class LocalStatisticsService extends StatisticsService {
       throw new Error('Not any saved statistics data for this game.');
     }
 
-    const stat = allStats.filter((s) => s.gameGuid === gameGuid.toString() && s.playerId === playerId);
+    const stat = allStats.find((s) => s.gameGuid === gameGuid.toString() && s.playerId === playerId);
     if (!stat) {
       throw new Error(
         `Statistics for the game with id ${gameGuid.toString()} and player with id ${playerId} wasn't found.`
       );
     }
 
-    return stat[0];
+    return stat;
   }
 
   saveStatistics(gameGuid: Guid, gameEngine: GameEngine): void {
