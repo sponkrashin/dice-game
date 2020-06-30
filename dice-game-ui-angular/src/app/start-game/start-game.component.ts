@@ -24,7 +24,7 @@ export class StartGameComponent implements OnInit {
 
   startGame() {
     const newGame = new SimpleGameEngine(this.size, this.size);
-    const gameGuid = this.gameStorageService.createGame(newGame);
+    const gameGuid = this.gameStorageService.saveGame(newGame);
     this.router.navigate(['/game', gameGuid.toString()]);
   }
 }

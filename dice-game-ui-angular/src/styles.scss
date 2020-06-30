@@ -10,7 +10,7 @@ body {
 }
 
 .m-1 {
-  margin: .25rem !important;
+  margin: 0.25rem !important;
 }
 
 .mt-3 {
@@ -23,4 +23,8 @@ body {
 
 .inline {
   display: inline-flex;
+}
+
+.text-muted {
+  color: grey;
 }
