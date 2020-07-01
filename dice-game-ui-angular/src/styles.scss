@@ -13,18 +13,6 @@ body {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
-app-root {
-  height: 100%;
-
-  display: flex;
-  flex-direction: column;
-}
-
-router-outlet + * {
-  display: flex;
-  flex: 1 0 auto;
-}
-
 .m-1 {
   margin: 0.25rem !important;
 }
@@ -35,4 +23,17 @@ router-outlet + * {
 
 .text-muted {
   color: grey;
+}
+
+app-root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+router-outlet + * {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  width: 100%;
 }
