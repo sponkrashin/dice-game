@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
 import { Guid } from 'guid-typescript';
 
-import { SimpleDice, GameEngine, Dice, Rect, Size } from 'engine';
+import { GameEngine, Rect, Size } from 'engine';
 import { GameStorageService } from '../services/game-storage-service';
 import { StatisticsService } from '../services/statistics-service';
 
@@ -56,7 +56,17 @@ export class GameComponent implements OnInit {
 
     if (this.gameEngine) {
       this.gameEngine.registerOnStateChanged((engine) => {
-        this.gameStorageService.saveGame(this.gameEngine, this.gameGuid);
+        this.gameStorageService.saveGame(engine, this.gameGuid);
+        // saving statistics
+        for (const player of engine.players) {
+          this.statisticsService.saveTurn(
+            this.gameGuid,
+            engine.players[0].playerId,
+            engine.players[0].score,
+            engine.players[0].rects.length
+          );
+        }
+
         this.score = engine.players[0].score;
         this.points = this.castData();
         this.renderField();
@@ -65,7 +75,17 @@ export class GameComponent implements OnInit {
       this.gameEngine.registerOnGameFinished((engine) => {
         this.gameFinished = true;
         this.gameStorageService.removeGame(this.gameGuid);
-        this.statisticsService.saveStatistics(this.gameGuid, this.gameEngine);
+        const winnerPlayer = engine.players[0];
+        // saving statistics
+        for (const player of engine.players) {
+          this.statisticsService.saveTurn(
+            this.gameGuid,
+            engine.players[0].playerId,
+            engine.players[0].score,
+            engine.players[0].rects.length,
+            winnerPlayer.playerId
+          );
+        }
       });
 
       this.gameEngine.startGame();

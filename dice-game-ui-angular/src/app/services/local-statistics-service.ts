@@ -1,11 +1,16 @@
 import { Guid } from 'guid-typescript';
-import { StatisticsService, StatisticsData } from './statistics-service';
-import { GameEngine } from 'engine';
+import { StatisticsService, GameStatistics, PlayerStaistics } from './statistics-service';
+import { GameEngine, SimpleGameEngine } from 'engine';
 
 export class LocalStatisticsService extends StatisticsService {
   private statisticsKey = 'statistics';
 
-  getGameStatistics(gameGuid: Guid): StatisticsData[] {
+  getAllStatistics(): GameStatistics[] {
+    const statistics = localStorage.getItem(this.statisticsKey);
+    return statistics ? (JSON.parse(statistics) as GameStatistics[]) : [];
+  }
+
+  getGameStatistics(gameGuid: Guid): GameStatistics[] {
     const allStats = this.getAllStatistics();
     if (allStats.length === 0) {
       throw new Error('Not any saved statistics data for this game.');
@@ -18,13 +23,19 @@ export class LocalStatisticsService extends StatisticsService {
 
     return stats;
   }
-  getPlayerStatistics(playerId: string): StatisticsData[] {
+
+  getPlayerStatistics(playerId: string): GameStatistics[] {
     const allStats = this.getAllStatistics();
     if (allStats.length === 0) {
       throw new Error('Not any saved statistics data for this game.');
     }
 
-    const stats = allStats.filter((s) => s.playerId === playerId);
+    const stats = allStats.filter(
+      (s) =>
+        s.startPlayer === playerId ||
+        s.winnerPlayer === playerId ||
+        s.playersStaistics.find((p) => p.playerId === playerId)
+    );
     if (stats.length === 0) {
       throw new Error(`Statistics for the player with id ${playerId} wasn't found.`);
     }
@@ -32,50 +43,57 @@ export class LocalStatisticsService extends StatisticsService {
     return stats;
   }
 
-  getStatistics(gameGuid: Guid, playerId: string): StatisticsData {
+  create(gameGuid: Guid, gameEngine: GameEngine, startPlayer: string): void {
+    if (!gameGuid) {
+      throw new Error('The game guid is empty');
+    }
+    if (!gameEngine) {
+      throw new Error('The game engine is empty');
+    }
+    if (!startPlayer) {
+      throw new Error('The initial player is empty');
+    }
+    const allStats = this.getAllStatistics();
+    const gameStats = allStats.find((s) => s.gameGuid === gameGuid.toString());
+    if (gameStats) {
+      throw new Error('This game was already created');
+    }
+
+    const gameType = gameEngine instanceof SimpleGameEngine ? 'Single game' : 'Unkhown type';
+
+    const newGameStat = new GameStatistics(gameGuid.toString(), gameType, gameEngine.fieldSize, startPlayer);
+    allStats.push(newGameStat);
+    localStorage.setItem(this.statisticsKey, JSON.stringify(allStats));
+  }
+
+  saveTurn(gameGuid: Guid, playerId: string, score: number, turnsCount: number, winnerPlayer: string = null): void {
+    if (!gameGuid) {
+      throw new Error('The game guid is empty');
+    }
+    if (!playerId) {
+      throw new Error('The player id is empty');
+    }
+    if (score < 1) {
+      throw new Error('The score should be more then zero');
+    }
+
     const allStats = this.getAllStatistics();
     if (allStats.length === 0) {
       throw new Error('Not any saved statistics data for this game.');
     }
 
-    const stat = allStats.find((s) => s.gameGuid === gameGuid.toString() && s.playerId === playerId);
-    if (!stat) {
-      throw new Error(
-        `Statistics for the game with id ${gameGuid.toString()} and player with id ${playerId} wasn't found.`
-      );
+    const gameStat = allStats.find((sg) => sg.gameGuid === gameGuid.toString());
+    if (!gameStat) {
+      throw new Error(`Statistics for the game with id ${gameGuid.toString()} and wasn't found.`);
     }
 
-    return stat;
-  }
-
-  saveStatistics(gameGuid: Guid, gameEngine: GameEngine): void {
-    if (!gameGuid) {
-      throw new Error('The game guid is empty');
+    gameStat.winnerPlayer = winnerPlayer;
+    let playerStat = gameStat.playersStaistics.find((p) => p.playerId);
+    if (!playerStat) {
+      playerStat = new PlayerStaistics(playerId);
     }
-    const allStats = this.getAllStatistics();
-    const gameStats = allStats.filter((s) => s.gameGuid === gameGuid.toString());
-    for (const player of gameEngine.players) {
-      let playerStat = gameStats.find((statPlayer) => statPlayer.playerId === player.playerId);
-      if (playerStat) {
-        throw new Error(
-          `Statistics for the game with id ${gameGuid.toString()} and the player with id ${
-            player.playerId
-          } was already saved.`
-        );
-      }
-      playerStat = new StatisticsData(
-        gameGuid.toString(),
-        player.playerId,
-        player.score,
-        `Single game ${gameEngine.fieldSize.width} x ${gameEngine.fieldSize.height}`
-      );
-      allStats.push(playerStat);
-    }
+    playerStat.score = score;
+    playerStat.turnsCount = turnsCount;
     localStorage.setItem(this.statisticsKey, JSON.stringify(allStats));
-  }
-
-  getAllStatistics(): StatisticsData[] {
-    const statistics = localStorage.getItem(this.statisticsKey);
-    return statistics ? (JSON.parse(statistics) as StatisticsData[]) : [];
   }
 }

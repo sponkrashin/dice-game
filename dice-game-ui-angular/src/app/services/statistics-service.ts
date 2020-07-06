@@ -1,28 +1,36 @@
 import { Injectable } from '@angular/core';
 import { Guid } from 'guid-typescript';
-import { GameEngine } from 'engine';
+import { GameEngine, Size } from 'engine';
 
-export class StatisticsData {
-  gameGuid: string;
-  playerId: string;
-  totalScore: number;
-  gameType: string;
-  finishedDate: Date;
+export class GameStatistics {
+  readonly creatingDate: Date;
+  playersStaistics: PlayerStaistics[];
+  public winnerPlayer: string;
 
-  constructor(gameGuid: string, playerId: string, totalScore: number, gameType: string) {
-    this.gameGuid = gameGuid;
-    this.playerId = playerId;
-    this.totalScore = totalScore;
-    this.gameType = gameType;
-    this.finishedDate = new Date();
+  constructor(public gameGuid: string, public gameType: string, public fieldSize: Size, public startPlayer: string) {
+    this.creatingDate = new Date();
+  }
+}
+
+export class PlayerStaistics {
+  score: number;
+  turnsCount: number;
+
+  constructor(public playerId: string) {
+    this.score = 0;
+    this.turnsCount = 0;
   }
 }
 
 @Injectable()
 export abstract class StatisticsService {
-  abstract getStatistics(gameGuid: Guid, playerId: string): StatisticsData;
-  abstract getGameStatistics(gameGuid: Guid): StatisticsData[];
-  abstract getPlayerStatistics(playerId: string): StatisticsData[];
-  abstract saveStatistics(gameGuid: Guid, gameEngine: GameEngine): void;
-  abstract getAllStatistics(): StatisticsData[];
+  abstract getAllStatistics(): GameStatistics[];
+  abstract getGameStatistics(gameGuid: Guid): GameStatistics[];
+  abstract getPlayerStatistics(playerId: string): GameStatistics[];
+
+  abstract create(gameGuid: Guid, gameEngine: GameEngine, startPlayer: string): void;
+
+  saveTurn(gameGuid: Guid, playerId: string, score: number, turnsCount: number, winnerPlayer: string = null): void {
+    throw new Error('The method was not implemented');
+  }
 }

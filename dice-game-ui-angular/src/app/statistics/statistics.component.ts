@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { StatisticsData, StatisticsService } from '../services/statistics-service';
+import { GameStatistics, StatisticsService } from '../services/statistics-service';
 
 @Component({
   selector: 'app-statistics',
@@ -8,7 +8,7 @@ import { StatisticsData, StatisticsService } from '../services/statistics-servic
   styleUrls: ['./statistics.component.scss'],
 })
 export class StatisticsComponent implements OnInit {
-  statistics: StatisticsData[];
+  statistics: GameStatistics[];
   displayedColumns: string[];
 
   constructor(private statisticsService: StatisticsService) {
@@ -22,6 +22,6 @@ export class StatisticsComponent implements OnInit {
   private getAllStatistics() {
     this.statistics = this.statisticsService
       .getAllStatistics()
-      .sort((game1, game2) => (game1.finishedDate < game2.finishedDate ? 1 : -1));
+      .sort((game1, game2) => (game1.creatingDate < game2.creatingDate ? 1 : -1));
   }
 }
