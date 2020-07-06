@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SocialAuthService, SocialUser, GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
 
 @Component({
   selector: 'app-nav-menu',
@@ -7,6 +8,10 @@ import { Component } from '@angular/core';
 })
 export class NavMenuComponent {
   isExpanded = false;
+
+  constructor() {}
+
+  ngOnInit(): void {}
 
   collapse() {
     this.isExpanded = false;
