@@ -8,7 +8,8 @@ export class StatisticsDTO {
     public fieldSize: string,
     public turnsCount: number,
     public score: number,
-    public isWinner: boolean
+    public isWinner: boolean,
+    public wasCompleted: boolean
   ) {}
 }
 
@@ -22,7 +23,7 @@ export class StatisticsComponent implements OnInit {
   displayedColumns: string[];
 
   constructor(private statisticsService: StatisticsService) {
-    this.displayedColumns = ['gameType', 'fieldSize', 'turnsCount', 'score', 'isWinner'];
+    this.displayedColumns = ['wasCompleted', 'gameType', 'fieldSize', 'turnsCount', 'score', 'isWinner'];
   }
 
   ngOnInit(): void {
@@ -39,9 +40,10 @@ export class StatisticsComponent implements OnInit {
           new StatisticsDTO(
             s.gameType,
             `${s.fieldSize.width} x ${s.fieldSize.height}`,
-            s.playersStaistics?.find((ps) => ps.playerId === curPlayer)?.score ?? 0,
             s.playersStaistics?.find((ps) => ps.playerId === curPlayer)?.turnsCount ?? 0,
-            s.winnerPlayer === curPlayer
+            s.playersStaistics?.find((ps) => ps.playerId === curPlayer)?.score ?? 0,
+            s.winnerPlayer === curPlayer,
+            s.winnerPlayer !== undefined && s.winnerPlayer !== ''
           )
       );
   }
