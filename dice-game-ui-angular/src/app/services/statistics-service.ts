@@ -8,6 +8,7 @@ export class GameStatistics {
   public winnerPlayer: string;
 
   constructor(public gameGuid: string, public gameType: string, public fieldSize: Size, public startPlayer: string) {
+    this.playersStaistics = [];
     this.creatingDate = new Date();
   }
 }
@@ -29,8 +30,6 @@ export abstract class StatisticsService {
   abstract getPlayerStatistics(playerId: string): GameStatistics[];
 
   abstract create(gameGuid: Guid, gameEngine: GameEngine, startPlayer: string): void;
-
-  saveTurn(gameGuid: Guid, playerId: string, score: number, turnsCount: number, winnerPlayer: string = null): void {
-    throw new Error('The method was not implemented');
-  }
+  abstract saveTurn(gameGuid: Guid, playerId: string, score: number, turnsCount: number): void;
+  abstract finish(gameGuid: Guid, winnerPlayer: string): void;
 }

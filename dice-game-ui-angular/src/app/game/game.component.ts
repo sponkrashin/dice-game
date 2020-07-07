@@ -61,7 +61,7 @@ export class GameComponent implements OnInit {
         for (const player of engine.players) {
           this.statisticsService.saveTurn(
             this.gameGuid,
-            engine.players[0].playerId,
+            engine.players[0].playerId ?? 'local player',
             engine.players[0].score,
             engine.players[0].rects.length
           );
@@ -75,17 +75,7 @@ export class GameComponent implements OnInit {
       this.gameEngine.registerOnGameFinished((engine) => {
         this.gameFinished = true;
         this.gameStorageService.removeGame(this.gameGuid);
-        const winnerPlayer = engine.players[0];
-        // saving statistics
-        for (const player of engine.players) {
-          this.statisticsService.saveTurn(
-            this.gameGuid,
-            engine.players[0].playerId,
-            engine.players[0].score,
-            engine.players[0].rects.length,
-            winnerPlayer.playerId
-          );
-        }
+        this.statisticsService.finish(this.gameGuid, engine.players[0].playerId ?? 'local player');
       });
 
       this.gameEngine.startGame();

@@ -66,7 +66,7 @@ export class LocalStatisticsService extends StatisticsService {
     localStorage.setItem(this.statisticsKey, JSON.stringify(allStats));
   }
 
-  saveTurn(gameGuid: Guid, playerId: string, score: number, turnsCount: number, winnerPlayer: string = null): void {
+  saveTurn(gameGuid: Guid, playerId: string, score: number, turnsCount: number): void {
     if (!gameGuid) {
       throw new Error('The game guid is empty');
     }
@@ -87,13 +87,33 @@ export class LocalStatisticsService extends StatisticsService {
       throw new Error(`Statistics for the game with id ${gameGuid.toString()} and wasn't found.`);
     }
 
-    gameStat.winnerPlayer = winnerPlayer;
     let playerStat = gameStat.playersStaistics.find((p) => p.playerId);
     if (!playerStat) {
       playerStat = new PlayerStaistics(playerId);
     }
     playerStat.score = score;
     playerStat.turnsCount = turnsCount;
+    localStorage.setItem(this.statisticsKey, JSON.stringify(allStats));
+  }
+
+  finish(gameGuid: Guid, winnerPlayer: string): void {
+    if (!gameGuid) {
+      throw new Error('The game guid is empty');
+    }
+    if (!winnerPlayer) {
+      throw new Error('The player id is empty');
+    }
+
+    const allStats = this.getAllStatistics();
+    if (allStats.length === 0) {
+      throw new Error('Not any saved statistics data for this game.');
+    }
+
+    const gameStat = allStats.find((sg) => sg.gameGuid === gameGuid.toString());
+    if (!gameStat) {
+      throw new Error(`Statistics for the game with id ${gameGuid.toString()} and wasn't found.`);
+    }
+    gameStat.winnerPlayer = winnerPlayer;
     localStorage.setItem(this.statisticsKey, JSON.stringify(allStats));
   }
 }
