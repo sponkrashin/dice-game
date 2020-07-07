@@ -1,9 +1,9 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
 import { Guid } from 'guid-typescript';
+import { GameEngine, Rect, Size } from 'engine';
 
-import { SimpleDice, GameEngine, Dice, Rect, Size } from 'engine';
 import { GameStorageService } from '../services/game-storage-service';
 
 interface FieldPoint {
@@ -18,7 +18,7 @@ interface FieldPoint {
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss'],
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, AfterViewInit {
   private readonly setColor: string = '#D28EFF';
   private readonly selectedColor: string = '#3f51b5';
   private readonly emptyColor: string = 'lightblue';
@@ -38,55 +38,67 @@ export class GameComponent implements OnInit {
   gameFinished = false;
   score = 0;
 
-  constructor(private router: Router, private route: ActivatedRoute, private gameStorageService: GameStorageService) {}
-
-  ngOnInit(): void {
+  constructor(private router: Router, private route: ActivatedRoute, private gameStorageService: GameStorageService) {
     this.gameGuid = Guid.parse(this.route.snapshot.paramMap.get('id'));
+
     try {
       this.gameEngine = this.gameStorageService.restoreGame(this.gameGuid);
     } catch {
-      throw new Error('The game was not started.');
-    }
-
-    if (this.gameEngine) {
-      this.gameEngine.registerOnStateChanged((engine) => {
-        this.gameStorageService.saveGame(this.gameEngine, this.gameGuid);
-        this.score = engine.players[0].score;
-        this.points = this.castData();
-        this.renderField();
-      });
-
-      this.gameEngine.registerOnGameFinished((engine) => {
-        this.gameFinished = true;
-        this.gameStorageService.removeGame(this.gameGuid);
-      });
-
-      this.gameEngine.startGame();
-    } else {
       this.router.navigate(['/']);
-    }
-
-    this.svg = d3.select('#canv');
-    // fixed issues with actions outside svg element
-    d3.select('body').on('mouseup', () => {
-      this.clearSelection();
-      this.startPoint = null;
-      this.selecting = false;
-    });
-    if (this.gameEngine) {
-      this.points = this.castData();
-      this.renderField();
+      return;
     }
   }
 
-  /// get actual size of div for the game field
+  ngOnInit(): void {
+    if (!this.gameEngine) {
+      return;
+    }
+
+    this.gameEngine.registerOnStateChanged((engine) => {
+      this.gameStorageService.saveGame(this.gameEngine, this.gameGuid);
+      this.score = engine.players[0].score;
+      this.points = this.castData();
+      this.renderField();
+    });
+
+    this.gameEngine.registerOnGameFinished(() => {
+      this.gameFinished = true;
+      this.gameStorageService.removeGame(this.gameGuid);
+    });
+
+    this.gameEngine.startGame();
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.gameEngine) {
+      return;
+    }
+
+    this.svg = d3.select('#canv');
+    this.points = this.castData();
+    setTimeout(() => this.renderField());
+  }
+
+  // get actual size of div for the game field
   @HostListener('window:resize')
-  onResize() {
+  onResize(): void {
     this.svg.selectAll('rect').remove();
     this.renderField();
   }
 
-  public rollDices() {
+  // fixed issues with actions outside svg element
+  @HostListener('body:mouseup', ['$event'])
+  onClickOutside(event: MouseEvent): void {
+    const targetElementName = (event.target as HTMLElement).tagName;
+
+    if (targetElementName !== 'rect') {
+      this.clearSelection();
+      this.startPoint = null;
+      this.selecting = false;
+    }
+  }
+
+  public rollDices(): void {
     const dices = this.gameEngine.rollDices();
     this.dice1 = dices[0];
     this.dice2 = dices[1];
@@ -176,7 +188,7 @@ export class GameComponent implements OnInit {
     return points;
   }
 
-  public renderField() {
+  public renderField(): void {
     const svgWidth = this.svg.node().getBoundingClientRect().width;
     const newWidth = Math.min(svgWidth, this.canvasMaxHeight);
     const margin = (svgWidth - newWidth) / 2;
@@ -265,7 +277,7 @@ export class GameComponent implements OnInit {
     this.svg.selectAll('rect').data(this.points).exit().remove();
   }
 
-  public clearSelection() {
+  public clearSelection(): void {
     for (const point of this.points) {
       point.selected = false;
     }
