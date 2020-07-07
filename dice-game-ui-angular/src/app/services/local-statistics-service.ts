@@ -1,6 +1,7 @@
 import { Guid } from 'guid-typescript';
-import { StatisticsService, GameStatistics, PlayerStaistics } from './statistics-service';
 import { GameEngine, SimpleGameEngine } from 'engine';
+import { StatisticsService, GameStatistics, PlayerStaistics } from './statistics-service';
+
 
 export class LocalStatisticsService extends StatisticsService {
   private statisticsKey = 'statistics';
