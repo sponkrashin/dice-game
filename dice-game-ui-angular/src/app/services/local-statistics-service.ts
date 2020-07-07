@@ -90,6 +90,7 @@ export class LocalStatisticsService extends StatisticsService {
     let playerStat = gameStat.playersStaistics.find((p) => p.playerId);
     if (!playerStat) {
       playerStat = new PlayerStaistics(playerId);
+      gameStat.playersStaistics.push(playerStat);
     }
     playerStat.score = score;
     playerStat.turnsCount = turnsCount;
