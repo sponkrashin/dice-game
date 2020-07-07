@@ -2,22 +2,26 @@
 <div *ngIf="statistics.length>0; else noStatistics">
     <table mat-table [dataSource]="statistics" class="mat-elevation-z8 width-100">
 
-        <!-- Player Column -->
-        <ng-container matColumnDef="playerId">
-            <th mat-header-cell *matHeaderCellDef>Player</th>
-            <td mat-cell *matCellDef="let element"> {{element.playerId}} </td>
-        </ng-container>
-
-        <!-- Game Type Column -->
         <ng-container matColumnDef="gameType">
             <th mat-header-cell *matHeaderCellDef>Game Type</th>
-            <td mat-cell *matCellDef="let element"> {{element.gameType}} </td>
+            <td mat-cell *matCellDef="let s"> {{s.gameType}} </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="fieldSize">
+            <th mat-header-cell *matHeaderCellDef>Field Size</th>
+            <td mat-cell *matCellDef="let s"> {{s.fieldSize}} </td>
         </ng-container>
 
-        <!-- Score Column -->
-        <ng-container matColumnDef="score">
-            <th mat-header-cell *matHeaderCellDef>Score</th>
-            <td mat-cell *matCellDef="let element"> {{element.totalScore}} </td>
+        <ng-container matColumnDef="turnsCount">
+            <th mat-header-cell *matHeaderCellDef>Is winner</th>
+            <td mat-cell *matCellDef="let s"> {{s.turnsCount}} </td>
+        </ng-container>
+
+        <mat-text-column name="score"></mat-text-column>
+
+        <ng-container matColumnDef="isWinner">
+            <th mat-header-cell *matHeaderCellDef>Is winner</th>
+            <td mat-cell *matCellDef="let s"> <mat-icon *ngIf="s.isWinner" aria-label="Is winner" class="goldenrod">emoji_events</mat-icon> </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
