@@ -16,10 +16,12 @@ export class SimpleGameEngine implements GameEngine {
     return this.stateInternal;
   }
 
-  get players(): readonly Player[] {
+  /*get players(): readonly Player[] {
     const playerScore = this.rectsInternal.reduce((p, r) => p + r.getScore(), 0);
     return [{ playerId: null, score: playerScore, rects: this.rectsInternal }];
-  }
+  }*/
+
+  readonly players: readonly Player[];
 
   get rects(): readonly Rect[] {
     return this.rectsInternal;
@@ -48,10 +50,10 @@ export class SimpleGameEngine implements GameEngine {
   private onStateChangedEventHandlers: GameEngineEventHandler[] = [];
   private onGameFinishedEventHandlers: GameEngineEventHandler[] = [];
 
-  constructor(fieldWidth: number, fieldHeight: number, options?: SimpleGameEngineOptions) {
+  constructor(fieldWidth: number, fieldHeight: number, playerId: string, options?: SimpleGameEngineOptions) {
     options = options ?? defaultOptions;
-
     this.fieldSize = { width: fieldWidth, height: fieldHeight };
+    this.players = [{ playerId: playerId, score: 0, rects: this.rectsInternal }];
     this.dicesInternal = [new SimpleDice(options.maxDiceValue), new SimpleDice(options.maxDiceValue)];
   }
 
@@ -97,6 +99,9 @@ export class SimpleGameEngine implements GameEngine {
 
     this.rectsInternal.push(rect);
     this.changeState(rect);
+
+    const playerScore = this.rectsInternal.reduce((p, r) => p + r.getScore(), 0);
+    this.players[0].score = playerScore;
 
     this.onStateChangedEventHandlers.forEach((handler) => handler(this));
   }

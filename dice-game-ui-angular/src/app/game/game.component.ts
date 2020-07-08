@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
 import { Guid } from 'guid-typescript';
+import { SocialAuthService, SocialUser } from 'angularx-social-login';
 import { GameEngine, Rect, Size } from 'engine';
 
 import { GameStorageService } from '../services/game-storage-service';
@@ -24,6 +25,8 @@ export class GameComponent implements OnInit, AfterViewInit {
   private readonly emptyColor: string = 'lightblue';
   private canvasMaxHeight = 600;
 
+  private readonly localPlayer = 'local player';
+
   private gameGuid: Guid;
   private gameEngine: GameEngine;
 
@@ -33,12 +36,19 @@ export class GameComponent implements OnInit, AfterViewInit {
   private svg: any = null;
   private startPoint: FieldPoint = null;
 
+  user: SocialUser;
+
   dice1 = 0;
   dice2 = 0;
   gameFinished = false;
   score = 0;
 
-  constructor(private router: Router, private route: ActivatedRoute, private gameStorageService: GameStorageService) {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private authService: SocialAuthService,
+    private gameStorageService: GameStorageService
+  ) {
     this.gameGuid = Guid.parse(this.route.snapshot.paramMap.get('id'));
 
     try {
@@ -50,6 +60,10 @@ export class GameComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.authService.authState.subscribe((user) => {
+      this.user = user;
+    });
+
     if (!this.gameEngine) {
       return;
     }
@@ -236,7 +250,7 @@ export class GameComponent implements OnInit, AfterViewInit {
 
         if (this.isFullRect(selectedRect)) {
           try {
-            this.gameEngine.addRect(null, selectedRect);
+            this.gameEngine.addRect(this.user?.email ?? this.localPlayer, selectedRect);
             this.dice1 = 0;
             this.dice2 = 0;
             if (this.gameEngine.state.reduce((prev, next) => prev.concat(next)).filter((c) => !c).length === 0) {

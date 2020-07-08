@@ -2,11 +2,11 @@
     <div class="inline height-100 p-3" *ngIf="!loggedIn; else userData">
         <p>Login via:</p>
         <button mat-icon-button aria-label="Login with a google account" (click)="signInWithGoogle()">
-            <mat-icon>g-translate</mat-icon>
+            <mat-icon>android</mat-icon>
         </button>
-        <!--button mat-icon-button aria-label="Login with a facebook account" (click)="signInWithFB()">
+        <button mat-icon-button aria-label="Login with a facebook account" (click)="signInWithFB()">
             <mat-icon>face</mat-icon>
-        </button-->
+        </button>
     </div>
     <ng-template #userData>
         <div class="inline height-100 p-2">

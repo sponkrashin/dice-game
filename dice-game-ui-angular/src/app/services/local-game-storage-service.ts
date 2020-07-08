@@ -1,11 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Guid } from 'guid-typescript';
+import { SocialAuthService, SocialUser } from 'angularx-social-login';
 import { GameEngine, SimpleGameEngine } from 'engine';
 import { GameStorageService, SavedGameEngine } from './game-storage-service';
 
 @Injectable()
-export class LocalGameStorageService implements GameStorageService {
+export class LocalGameStorageService extends GameStorageService {
   private readonly savedGamesKey = 'saved-games';
+
+  private user: SocialUser;
+
+  // ToDo: remove using social auth service when factory will be created
+  constructor(private authService: SocialAuthService) {
+    super();
+    this.authService.authState.subscribe((user) => {
+      this.user = user;
+    });
+  }
 
   saveGame(gameEngine: GameEngine, guid: Guid = null): Guid {
     const allSavedGames = this.getAllSavedGames();
@@ -42,12 +53,20 @@ export class LocalGameStorageService implements GameStorageService {
     if (!curSavedGame) {
       throw new Error(`A game with the guid ${guid.toString()} wasn't found in the stored games`);
     }
-    return new SimpleGameEngine(curSavedGame.gameEngine.fieldSize.width, curSavedGame.gameEngine.fieldSize.height);
+    return new SimpleGameEngine(
+      curSavedGame.gameEngine.fieldSize.width,
+      curSavedGame.gameEngine.fieldSize.height,
+      this.user.email
+    );
   }
 
-  getAllSavedGames(): SavedGameEngine[] {
+  protected getAllSavedGames(): SavedGameEngine[] {
     const savedGames = localStorage.getItem(this.savedGamesKey);
     return savedGames ? (JSON.parse(savedGames) as SavedGameEngine[]) : [];
+  }
+
+  getPlayerSavedGames(playerId: string): SavedGameEngine[] {
+    return this.getAllSavedGames().filter((sg) => sg.gameEngine.players.find((p) => p.playerId === playerId));
   }
 
   removeGame(guid: Guid): void {
