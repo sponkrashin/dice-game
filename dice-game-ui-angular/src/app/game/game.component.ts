@@ -65,9 +65,9 @@ export class GameComponent implements OnInit, AfterViewInit {
       for (const player of engine.players) {
         this.statisticsService.saveTurn(
           this.gameGuid,
-          engine.players[0].playerId ?? 'local player',
-          engine.players[0].score,
-          engine.players[0].rects.length
+          player.playerId ?? 'local player',
+          player.score,
+          player.rects.length
         );
       }
 
