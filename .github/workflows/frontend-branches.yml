@@ -1,12 +1,9 @@
-name: Frontend
+name: Frontend (branches)
 
 on:
-  pull_request:
-    branches:
-      - '*'
   push:
-    branches:
-      - 'master'
+    branches-ignore: 'master'
+    paths: 'dice-game-ui-angular/**'
 
 jobs:
   build:
