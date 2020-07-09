@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { GameStatistics, StatisticsService } from '../services/statistics-service';
 
 export interface StatisticsDTO {
-  gameType: string;
+  gameType: string
   fieldSize: string;
   turnsCount: number;
   score: number;
