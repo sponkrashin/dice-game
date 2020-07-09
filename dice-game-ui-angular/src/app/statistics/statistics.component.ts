@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { SocialAuthService, SocialUser } from 'angularx-social-login';
 import { StatisticsService } from '../services/statistics-service';
 
 export interface StatisticsDTO {
@@ -17,19 +17,23 @@ export interface StatisticsDTO {
   styleUrls: ['./statistics.component.scss'],
 })
 export class StatisticsComponent implements OnInit {
+  private user: SocialUser;
   statistics: StatisticsDTO[];
   displayedColumns: string[];
 
-  constructor(private statisticsService: StatisticsService) {
+  constructor(private authService: SocialAuthService, private statisticsService: StatisticsService) {
     this.displayedColumns = ['wasCompleted', 'gameType', 'fieldSize', 'turnsCount', 'score', 'isWinner'];
   }
 
   ngOnInit(): void {
-    this.getAllStatistics();
+    this.authService.authState.subscribe((user) => {
+      this.user = user;
+      this.getUserStatistics();
+    });
   }
 
-  private getAllStatistics(): void {
-    const curPlayer = 'local player';
+  private getUserStatistics(): void {
+    const curPlayer = this.user?.email ?? 'local player';
     this.statistics = this.statisticsService
       .getPlayerStatistics(curPlayer)
       .sort((game1, game2) => (game1.creatingDate < game2.creatingDate ? 1 : -1))
