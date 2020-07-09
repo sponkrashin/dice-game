@@ -53,7 +53,7 @@ export class SimpleGameEngine implements GameEngine {
   constructor(fieldWidth: number, fieldHeight: number, playerId: string, options?: SimpleGameEngineOptions) {
     options = options ?? defaultOptions;
     this.fieldSize = { width: fieldWidth, height: fieldHeight };
-    this.players = [{ playerId: playerId, score: 0, rects: this.rectsInternal }];
+    this.players = [{ playerId, score: 0, rects: this.rectsInternal }];
     this.dicesInternal = [new SimpleDice(options.maxDiceValue), new SimpleDice(options.maxDiceValue)];
   }
 

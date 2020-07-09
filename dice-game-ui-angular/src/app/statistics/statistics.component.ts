@@ -39,14 +39,14 @@ export class StatisticsComponent implements OnInit {
       .sort((game1, game2) => (game1.creatingDate < game2.creatingDate ? 1 : -1))
       .map((s) => {
         const player = s.playersStaistics?.find((ps) => ps.playerId === curPlayer);
-        return <StatisticsDTO>{
+        return {
           gameType: s.gameType,
           fieldSize: `${s.fieldSize.width} x ${s.fieldSize.height}`,
           turnsCount: player?.turnsCount ?? 0,
           score: player?.score ?? 0,
           isWinner: s.winnerPlayer === curPlayer,
           wasCompleted: !!s.winnerPlayer,
-        };
+        } as StatisticsDTO;
       });
   }
 }
