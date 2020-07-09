@@ -3,8 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import * as d3 from 'd3';
 import { Guid } from 'guid-typescript';
 import { GameEngine, Rect, Size } from 'engine';
-
 import { GameStorageService } from '../services/game-storage-service';
+import { StatisticsService } from '../services/statistics-service';
 
 interface FieldPoint {
   readonly x: number;
@@ -38,7 +38,12 @@ export class GameComponent implements OnInit, AfterViewInit {
   gameFinished = false;
   score = 0;
 
-  constructor(private router: Router, private route: ActivatedRoute, private gameStorageService: GameStorageService) {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private gameStorageService: GameStorageService,
+    private statisticsService: StatisticsService
+  ) {
     this.gameGuid = Guid.parse(this.route.snapshot.paramMap.get('id'));
 
     try {
@@ -56,14 +61,25 @@ export class GameComponent implements OnInit, AfterViewInit {
 
     this.gameEngine.registerOnStateChanged((engine) => {
       this.gameStorageService.saveGame(this.gameEngine, this.gameGuid);
+      // saving statistics
+      for (const player of engine.players) {
+        this.statisticsService.saveTurn(
+          this.gameGuid,
+          player.playerId ?? 'local player',
+          player.score,
+          player.rects.length
+        );
+      }
+
       this.score = engine.players[0].score;
       this.points = this.castData();
       this.renderField();
     });
 
-    this.gameEngine.registerOnGameFinished(() => {
+    this.gameEngine.registerOnGameFinished((engine) => {
       this.gameFinished = true;
       this.gameStorageService.removeGame(this.gameGuid);
+      this.statisticsService.finish(this.gameGuid, engine.players[0].playerId ?? 'local player');
     });
 
     this.gameEngine.startGame();
