@@ -2,7 +2,6 @@ name: Frontend
 
 on:
   push:
-    branches: '*'
     branches-ignore: 'master'
     paths: 'dice-game-ui-angular/**'
 
