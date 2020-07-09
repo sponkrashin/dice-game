@@ -3,12 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { GameStatistics, StatisticsService } from '../services/statistics-service';
 
 export interface StatisticsDTO {
-  gameType: string,
-  fieldSize: string,
-  turnsCount: number,
-  score: number,
-  isWinner: boolean,
-  wasCompleted: boolean
+  gameType: string;
+  fieldSize: string;
+  turnsCount: number;
+  score: number;
+  isWinner: boolean;
+  wasCompleted: boolean;
 }
 
 @Component({
@@ -33,17 +33,16 @@ export class StatisticsComponent implements OnInit {
     this.statistics = this.statisticsService
       .getPlayerStatistics(curPlayer)
       .sort((game1, game2) => (game1.creatingDate < game2.creatingDate ? 1 : -1))
-      .map(
-        (s) => {
-          const player = s.playersStaistics?.find((ps) => ps.playerId === curPlayer);
-          return <StatisticsDTO>{
-            gameType: s.gameType,
-            fieldSize: `${s.fieldSize.width} x ${s.fieldSize.height}`,
-            turnsCount: player?.turnsCount ?? 0,
-            score: player?.score ?? 0,
-            isWinner: s.winnerPlayer === curPlayer,
-            wasCompleted: !!s.winnerPlayer
-          }
-        });
+      .map((s) => {
+        const player = s.playersStaistics?.find((ps) => ps.playerId === curPlayer);
+        return {
+          gameType: s.gameType,
+          fieldSize: `${s.fieldSize.width} x ${s.fieldSize.height}`,
+          turnsCount: player?.turnsCount ?? 0,
+          score: player?.score ?? 0,
+          isWinner: s.winnerPlayer === curPlayer,
+          wasCompleted: !!s.winnerPlayer,
+        } as StatisticsDTO;
+      });
   }
 }
