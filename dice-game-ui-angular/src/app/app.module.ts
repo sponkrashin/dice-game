@@ -8,23 +8,27 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 
 import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login';
 import { GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
 
+import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { StartGameComponent } from './start-game/start-game.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { GameComponent } from './game/game.component';
 import { MainComponent } from './main/main.component';
+import { StatisticsComponent } from './statistics/statistics.component';
+import { SavedGamesComponent } from './saved-games/saved-games.component';
 import { GameStorageService } from './services/game-storage-service';
 import { LocalGameStorageService } from './services/local-game-storage-service';
-import { SavedGamesComponent } from './saved-games/saved-games.component';
-import { environment } from 'src/environments/environment';
 import { LoginComponent } from './login/login.component';
+import { StatisticsService } from './services/statistics-service';
+import { LocalStatisticsService } from './services/local-statistics-service';
 
 @NgModule({
   declarations: [
@@ -35,6 +39,7 @@ import { LoginComponent } from './login/login.component';
     MainComponent,
     SavedGamesComponent,
     LoginComponent,
+    StatisticsComponent,
   ],
   imports: [
     BrowserModule,
@@ -49,11 +54,12 @@ import { LoginComponent } from './login/login.component';
     MatSidenavModule,
     MatCardModule,
     MatIconModule,
-
+    MatTableModule,
     SocialLoginModule,
   ],
   providers: [
     { provide: GameStorageService, useClass: LocalGameStorageService },
+    { provide: StatisticsService, useClass: LocalStatisticsService },
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {
@@ -70,6 +76,7 @@ import { LoginComponent } from './login/login.component';
         ],
       } as SocialAuthServiceConfig,
     },
+    MatTableModule,
   ],
   bootstrap: [AppComponent],
 })

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { SocialAuthService, SocialUser } from 'angularx-social-login';
 import { SimpleGameEngine } from 'engine';
 import { GameStorageService } from '../services/game-storage-service';
+import { StatisticsService } from '../services/statistics-service';
 
 @Component({
   selector: 'app-start-game',
@@ -18,7 +19,8 @@ export class StartGameComponent implements OnInit {
   constructor(
     private router: Router,
     private gameStorageService: GameStorageService,
-    private authService: SocialAuthService
+    private authService: SocialAuthService,
+    private statisticsService: StatisticsService
   ) {}
 
   ngOnInit(): void {
@@ -34,6 +36,7 @@ export class StartGameComponent implements OnInit {
   startGame() {
     const newGame = new SimpleGameEngine(this.size, this.size, this.user?.email ?? this.localPlayer);
     const gameGuid = this.gameStorageService.saveGame(newGame);
+    this.statisticsService.create(gameGuid, newGame, newGame.players[0].playerId ?? 'local player');
     this.router.navigate(['/game', gameGuid.toString()]);
   }
 }
