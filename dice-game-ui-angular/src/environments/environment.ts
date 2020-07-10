@@ -1,11 +1,12 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+import * as env from './env.json';
 
 export const environment = {
   production: false,
-  googleAuthClientId: $ENV.googleAuthClientId,
-  fbAuthClientId: $ENV.fbAuthClientId,
+  googleAuthClientId: env.googleAuthClientId,
+  fbAuthClientId: env.fbAuthClientId,
 };
 
 /*
