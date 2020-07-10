@@ -33,7 +33,6 @@ export class SavedGamesComponent implements OnInit {
   }
 
   private setAllGameEngines() {
-    const userStat = 
     this.games = this.gameStorageService
       .getPlayerSavedGames(this.user?.email ?? this.localPlayer)
       .sort((game1, game2) => (game1.creationDate < game2.creationDate ? 1 : -1));
