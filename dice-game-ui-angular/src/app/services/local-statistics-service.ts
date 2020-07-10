@@ -11,35 +11,17 @@ export class LocalStatisticsService extends StatisticsService {
   }
 
   getGameStatistics(gameGuid: Guid): GameStatistics[] {
-    const allStats = this.getAllStatistics();
-    if (allStats.length === 0) {
-      throw new Error('Not any saved statistics data for this game.');
-    }
-
-    const stats = allStats.filter((s) => s.gameGuid === gameGuid.toString());
-    if (stats.length === 0) {
-      throw new Error(`Statistics for the game with id ${gameGuid.toString()} and wasn't found.`);
-    }
-
+    const stats = this.getAllStatistics().filter((s) => s.gameGuid === gameGuid.toString());
     return stats;
   }
 
   getPlayerStatistics(playerId: string): GameStatistics[] {
-    const allStats = this.getAllStatistics();
-    if (allStats.length === 0) {
-      throw new Error('Not any saved statistics data for this game.');
-    }
-
-    const stats = allStats.filter(
+    const stats = this.getAllStatistics().filter(
       (s) =>
         s.startPlayer === playerId ||
         s.winnerPlayer === playerId ||
         s.playersStaistics.find((p) => p.playerId === playerId)
     );
-    if (stats.length === 0) {
-      throw new Error(`Statistics for the player with id ${playerId} wasn't found.`);
-    }
-
     return stats;
   }
 
