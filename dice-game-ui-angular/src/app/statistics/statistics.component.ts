@@ -18,7 +18,7 @@ export interface StatisticsDTO {
 })
 export class StatisticsComponent implements OnInit {
   private user: SocialUser;
-  statistics: StatisticsDTO[];
+  statistics: StatisticsDTO[] = [];
   displayedColumns: string[];
 
   constructor(private authService: SocialAuthService, private statisticsService: StatisticsService) {
@@ -26,6 +26,7 @@ export class StatisticsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getUserStatistics();
     this.authService.authState.subscribe((user) => {
       this.user = user;
       this.getUserStatistics();

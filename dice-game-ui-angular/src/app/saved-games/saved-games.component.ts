@@ -10,12 +10,13 @@ import { GameStorageService, SavedGameEngine } from '../services/game-storage-se
 })
 export class SavedGamesComponent implements OnInit {
   private readonly localPlayer = 'local player';
-  games: SavedGameEngine[];
+  games: SavedGameEngine[] = [];
   user: SocialUser;
 
   constructor(private gameStorageService: GameStorageService, private authService: SocialAuthService) {}
 
   ngOnInit(): void {
+    this.setAllGameEngines();
     this.authService.authState.subscribe((user) => {
       this.user = user;
       this.setAllGameEngines();
@@ -32,6 +33,7 @@ export class SavedGamesComponent implements OnInit {
   }
 
   private setAllGameEngines() {
+    const userStat = 
     this.games = this.gameStorageService
       .getPlayerSavedGames(this.user?.email ?? this.localPlayer)
       .sort((game1, game2) => (game1.creationDate < game2.creationDate ? 1 : -1));
