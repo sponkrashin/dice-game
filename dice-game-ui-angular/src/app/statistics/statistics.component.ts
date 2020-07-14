@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { SocialAuthService, SocialUser } from 'angularx-social-login';
 import { StatisticsService } from '../services/statistics-service';
+import { UserService } from '../services/user-service';
 
 export interface StatisticsDTO {
   gameType: string;
@@ -17,35 +17,39 @@ export interface StatisticsDTO {
   styleUrls: ['./statistics.component.scss'],
 })
 export class StatisticsComponent implements OnInit {
-  private user: SocialUser;
+  private userId: string;
   statistics: StatisticsDTO[] = [];
   displayedColumns: string[];
 
-  constructor(private authService: SocialAuthService, private statisticsService: StatisticsService) {
+  constructor(private userService: UserService, private statisticsService: StatisticsService) {
     this.displayedColumns = ['wasCompleted', 'gameType', 'fieldSize', 'turnsCount', 'score', 'isWinner'];
   }
 
   ngOnInit(): void {
-    this.getUserStatistics();
-    this.authService.authState.subscribe((user) => {
-      this.user = user;
-      this.getUserStatistics();
+    this.SetUserId(this.userService.userId);
+
+    this.userService.registerOnAuthStateChanged((user) => {
+      this.SetUserId(user.id);
     });
   }
 
+  private SetUserId(userId: string): void {
+    this.userId = userId;
+    this.getUserStatistics();
+  }
+
   private getUserStatistics(): void {
-    const curPlayer = this.user?.email ?? 'local player';
     this.statistics = this.statisticsService
-      .getPlayerStatistics(curPlayer)
+      .getPlayerStatistics(this.userId)
       .sort((game1, game2) => (game1.creatingDate < game2.creatingDate ? 1 : -1))
       .map((s) => {
-        const player = s.playersStaistics?.find((ps) => ps.playerId === curPlayer);
+        const player = s.playersStaistics?.find((ps) => ps.playerId === this.userId);
         return {
           gameType: s.gameType,
           fieldSize: `${s.fieldSize.width} x ${s.fieldSize.height}`,
           turnsCount: player?.turnsCount ?? 0,
           score: player?.score ?? 0,
-          isWinner: s.winnerPlayer === curPlayer,
+          isWinner: s.winnerPlayer === this.userId,
           wasCompleted: !!s.winnerPlayer,
         } as StatisticsDTO;
       });

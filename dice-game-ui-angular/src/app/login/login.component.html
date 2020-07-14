@@ -10,8 +10,8 @@
     </div>
     <ng-template #userData>
         <div class="inline height-100 p-2">
-            <img class="round height-60 m-1" src="{{ user?.photoUrl }}" alt="User's photo">
-            <h5 class="m-1">{{ user?.name }}</h5>
+            <img class="round height-60 m-1" src="{{ userPhotoUri }}" alt="User's photo">
+            <h5 class="m-1">{{ userName }}</h5>
             <button mat-icon-button aria-label="Login with a facebook account" (click)="signOut()" class="m-1">
                 <mat-icon>exit_to_app</mat-icon>
             </button>

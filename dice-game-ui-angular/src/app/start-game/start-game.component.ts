@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SocialAuthService, SocialUser } from 'angularx-social-login';
 import { SimpleGameEngine } from 'engine';
 import { GameStorageService } from '../services/game-storage-service';
 import { StatisticsService } from '../services/statistics-service';
+import { UserService } from '../services/user-service';
 
 @Component({
   selector: 'app-start-game',
@@ -14,18 +14,19 @@ export class StartGameComponent implements OnInit {
   private readonly localPlayer = 'local player';
   size: number;
   sizeOptions: number[] = [];
-  user: SocialUser;
+  private userId: string;
 
   constructor(
     private router: Router,
     private gameStorageService: GameStorageService,
-    private authService: SocialAuthService,
+    private userService: UserService,
     private statisticsService: StatisticsService
   ) {}
 
   ngOnInit(): void {
-    this.authService.authState.subscribe((user) => {
-      this.user = user;
+    this.userId = this.userService.userId;
+    this.userService.registerOnAuthStateChanged((user) => {
+      this.userId = user.id;
     });
     this.sizeOptions = [];
     for (let size = 6; size < 21; size++) {
@@ -34,9 +35,9 @@ export class StartGameComponent implements OnInit {
   }
 
   startGame() {
-    const newGame = new SimpleGameEngine(this.size, this.size, this.user?.email ?? this.localPlayer);
+    const newGame = new SimpleGameEngine(this.size, this.size, this.userId);
     const gameGuid = this.gameStorageService.saveGame(newGame);
-    this.statisticsService.create(gameGuid, newGame, newGame.players[0].playerId ?? 'local player');
+    this.statisticsService.create(gameGuid, newGame, this.userId);
     this.router.navigate(['/game', gameGuid.toString()]);
   }
 }

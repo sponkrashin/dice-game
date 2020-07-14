@@ -1,20 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Guid } from 'guid-typescript';
-import { SocialAuthService, SocialUser } from 'angularx-social-login';
 import { GameEngine, SimpleGameEngine } from 'engine';
 import { GameStorageService, SavedGameEngine } from './game-storage-service';
+import { UserService } from './user-service';
 
 @Injectable()
 export class LocalGameStorageService extends GameStorageService {
   private readonly savedGamesKey = 'saved-games';
 
-  private user: SocialUser;
+  private userId: string;
 
   // ToDo: remove using social auth service when factory will be created
-  constructor(private authService: SocialAuthService) {
+  constructor(private userService: UserService) {
     super();
-    this.authService.authState.subscribe((user) => {
-      this.user = user;
+    this.userId = this.userService.userId;
+    this.userService.registerOnAuthStateChanged((user) => {
+      this.userId = user.id;
     });
   }
 
@@ -56,7 +57,7 @@ export class LocalGameStorageService extends GameStorageService {
     return new SimpleGameEngine(
       curSavedGame.gameEngine.fieldSize.width,
       curSavedGame.gameEngine.fieldSize.height,
-      this.user.email
+      this.userId
     );
   }
 

@@ -12,8 +12,12 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 
-import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login';
-import { GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
+import {
+  SocialAuthServiceConfig,
+  SocialLoginModule,
+  GoogleLoginProvider,
+  FacebookLoginProvider,
+} from 'angularx-social-login';
 
 import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -29,6 +33,7 @@ import { LocalGameStorageService } from './services/local-game-storage-service';
 import { LoginComponent } from './login/login.component';
 import { StatisticsService } from './services/statistics-service';
 import { LocalStatisticsService } from './services/local-statistics-service';
+import { UserService } from './services/user-service';
 
 @NgModule({
   declarations: [
@@ -58,8 +63,6 @@ import { LocalStatisticsService } from './services/local-statistics-service';
     SocialLoginModule,
   ],
   providers: [
-    { provide: GameStorageService, useClass: LocalGameStorageService },
-    { provide: StatisticsService, useClass: LocalStatisticsService },
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {
@@ -76,7 +79,9 @@ import { LocalStatisticsService } from './services/local-statistics-service';
         ],
       } as SocialAuthServiceConfig,
     },
-    MatTableModule,
+    { provide: GameStorageService, useClass: LocalGameStorageService },
+    { provide: StatisticsService, useClass: LocalStatisticsService },
+    UserService,
   ],
   bootstrap: [AppComponent],
 })
