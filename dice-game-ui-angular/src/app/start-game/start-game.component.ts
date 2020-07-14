@@ -11,9 +11,10 @@ import { UserService } from '../services/user-service';
   styleUrls: ['./start-game.component.scss'],
 })
 export class StartGameComponent implements OnInit {
-  private readonly localPlayer = 'local player';
   size: number;
   sizeOptions: number[] = [];
+
+  private readonly localPlayer = 'local player';
   private userId: string;
 
   constructor(

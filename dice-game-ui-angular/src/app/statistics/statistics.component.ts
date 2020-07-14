@@ -17,9 +17,10 @@ export interface StatisticsDTO {
   styleUrls: ['./statistics.component.scss'],
 })
 export class StatisticsComponent implements OnInit {
-  private userId: string;
   statistics: StatisticsDTO[] = [];
   displayedColumns: string[];
+
+  private userId: string;
 
   constructor(private userService: UserService, private statisticsService: StatisticsService) {
     this.displayedColumns = ['wasCompleted', 'gameType', 'fieldSize', 'turnsCount', 'score', 'isWinner'];
@@ -35,10 +36,10 @@ export class StatisticsComponent implements OnInit {
 
   private SetUserId(userId: string): void {
     this.userId = userId;
-    this.getUserStatistics();
+    this.loadUserStatistics();
   }
 
-  private getUserStatistics(): void {
+  private loadUserStatistics(): void {
     this.statistics = this.statisticsService
       .getPlayerStatistics(this.userId)
       .sort((game1, game2) => (game1.creatingDate < game2.creatingDate ? 1 : -1))

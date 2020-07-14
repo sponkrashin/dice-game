@@ -20,6 +20,11 @@ interface FieldPoint {
   styleUrls: ['./game.component.scss'],
 })
 export class GameComponent implements OnInit, AfterViewInit {
+  dice1 = 0;
+  dice2 = 0;
+  gameFinished = false;
+  score = 0;
+
   private readonly setColor: string = '#D28EFF';
   private readonly selectedColor: string = '#3f51b5';
   private readonly emptyColor: string = 'lightblue';
@@ -35,11 +40,6 @@ export class GameComponent implements OnInit, AfterViewInit {
   private startPoint: FieldPoint = null;
 
   private userId: string;
-
-  dice1 = 0;
-  dice2 = 0;
-  gameFinished = false;
-  score = 0;
 
   constructor(
     private router: Router,

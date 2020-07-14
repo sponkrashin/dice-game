@@ -10,6 +10,7 @@ import { UserService } from '../services/user-service';
 })
 export class SavedGamesComponent implements OnInit {
   games: SavedGameEngine[] = [];
+
   private userId: string;
 
   constructor(private gameStorageService: GameStorageService, private userService: UserService) {}
@@ -24,7 +25,7 @@ export class SavedGamesComponent implements OnInit {
 
   private SetUserId(userId: string): void {
     this.userId = userId;
-    this.setAllGameEngines();
+    this.loadSavedGames();
   }
 
   getGameLink(gameEngine: SavedGameEngine) {
@@ -33,10 +34,10 @@ export class SavedGamesComponent implements OnInit {
 
   removeSavedGame(guid: Guid) {
     this.gameStorageService.removeGame(guid);
-    this.setAllGameEngines();
+    this.loadSavedGames();
   }
 
-  private setAllGameEngines() {
+  private loadSavedGames() {
     this.games = this.gameStorageService
       .getPlayerSavedGames(this.userId)
       .sort((game1, game2) => (game1.creationDate < game2.creationDate ? 1 : -1));

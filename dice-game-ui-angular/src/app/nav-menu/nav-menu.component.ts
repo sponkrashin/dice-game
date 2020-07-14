@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { SocialAuthService, SocialUser, GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
 
 @Component({
   selector: 'app-nav-menu',

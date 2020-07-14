@@ -7,7 +7,6 @@ import { UserService } from './user-service';
 @Injectable()
 export class LocalGameStorageService extends GameStorageService {
   private readonly savedGamesKey = 'saved-games';
-
   private userId: string;
 
   // ToDo: remove using social auth service when factory will be created
@@ -61,11 +60,6 @@ export class LocalGameStorageService extends GameStorageService {
     );
   }
 
-  protected getAllSavedGames(): SavedGameEngine[] {
-    const savedGames = localStorage.getItem(this.savedGamesKey);
-    return savedGames ? (JSON.parse(savedGames) as SavedGameEngine[]) : [];
-  }
-
   getPlayerSavedGames(playerId: string): SavedGameEngine[] {
     return this.getAllSavedGames().filter((sg) => sg.gameEngine.players.find((p) => p.playerId === playerId));
   }
@@ -85,5 +79,10 @@ export class LocalGameStorageService extends GameStorageService {
     }
     curSavedGames.splice(curSavedGameIndex, 1);
     localStorage.setItem(this.savedGamesKey, JSON.stringify(curSavedGames));
+  }
+
+  protected getAllSavedGames(): SavedGameEngine[] {
+    const savedGames = localStorage.getItem(this.savedGamesKey);
+    return savedGames ? (JSON.parse(savedGames) as SavedGameEngine[]) : [];
   }
 }
