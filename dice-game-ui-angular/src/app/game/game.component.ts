@@ -58,9 +58,9 @@ export class GameComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.userId = this.userService.userId;
+    this.userId = this.userService.getCurrentUserId();
 
-    this.userService.registerOnAuthStateChanged((user) => {
+    this.userService.getUser().subscribe((user) => {
       this.userId = user.id;
     });
 

@@ -27,9 +27,9 @@ export class StatisticsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.SetUserId(this.userService.userId);
+    this.SetUserId(this.userService.getCurrentUserId());
 
-    this.userService.registerOnAuthStateChanged((user) => {
+    this.userService.getUser().subscribe((user) => {
       this.SetUserId(user.id);
     });
   }

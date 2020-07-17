@@ -25,8 +25,8 @@ export class StartGameComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userId = this.userService.userId;
-    this.userService.registerOnAuthStateChanged((user) => {
+    this.userId = this.userService.getCurrentUserId();
+    this.userService.getUser().subscribe((user) => {
       this.userId = user.id;
     });
     this.sizeOptions = [];

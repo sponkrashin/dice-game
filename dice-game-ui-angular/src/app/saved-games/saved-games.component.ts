@@ -16,9 +16,9 @@ export class SavedGamesComponent implements OnInit {
   constructor(private gameStorageService: GameStorageService, private userService: UserService) {}
 
   ngOnInit(): void {
-    this.SetUserId(this.userService.userId);
+    this.SetUserId(this.userService.getCurrentUserId());
 
-    this.userService.registerOnAuthStateChanged((user) => {
+    this.userService.getUser().subscribe((user) => {
       this.SetUserId(user.id);
     });
   }

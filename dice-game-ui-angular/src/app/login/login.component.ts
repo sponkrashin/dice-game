@@ -14,10 +14,10 @@ export class LoginComponent implements OnInit {
   constructor(private userService: UserService) {}
 
   ngOnInit(): void {
-    this.userService.registerOnAuthStateChanged((user) => {
+    this.userService.getUser().subscribe((user) => {
       this.userName = user.name;
-      this.userPhotoUri = this.userService.userPhotoUri;
-      this.loggedIn = this.userService.isLoggedIn;
+      this.userPhotoUri = user.photoUrl;
+      this.loggedIn = this.userService.isLoggedIn();
     });
   }
 
