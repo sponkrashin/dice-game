@@ -12,7 +12,6 @@ export class LocalGameStorageService extends GameStorageService {
   // ToDo: remove using social auth service when factory will be created
   constructor(private userService: UserService) {
     super();
-    this.userId = this.userService.getCurrentUserId();
     this.userService.getUser().subscribe((user) => {
       this.userId = user.id;
     });

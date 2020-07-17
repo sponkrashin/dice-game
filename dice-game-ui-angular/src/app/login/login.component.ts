@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
     this.userService.getUser().subscribe((user) => {
       this.userName = user.name;
       this.userPhotoUri = user.photoUrl;
-      this.loggedIn = this.userService.isLoggedIn();
+      this.loggedIn = this.userService.isLoggedIn(user);
     });
   }
 

@@ -24,7 +24,6 @@ export class StartGameComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userId = this.userService.getCurrentUserId();
     this.userService.getUser().subscribe((user) => {
       this.userId = user.id;
     });

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { SocialAuthService, GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
 
 export type AuthUserEventHandler = (user: User) => void;
@@ -15,27 +15,23 @@ export interface User {
 })
 export class UserService {
   private readonly localUser: User;
-  private user: User;
-  private userSubject = new Subject<User>();
+  private userSubject = new ReplaySubject<User>();
 
   constructor(private authService: SocialAuthService) {
     this.localUser = { id: 'local player', name: 'local player' } as User;
-    this.user = this.localUser;
+    this.userSubject.next(this.localUser);
 
-    this.authService.authState.subscribe((socialUser) => {
-      this.user = socialUser
-        ? ({ id: socialUser.email, name: socialUser.name, photoUrl: socialUser.photoUrl } as User)
-        : this.localUser;
-      return this.userSubject.next(this.user);
-    });
+    this.authService.authState.subscribe((socialUser) =>
+      this.userSubject.next(
+        socialUser
+          ? ({ id: socialUser.email, name: socialUser.name, photoUrl: socialUser.photoUrl } as User)
+          : this.localUser
+      )
+    );
   }
 
-  getCurrentUserId(): string {
-    return this.user.id;
-  }
-
-  isLoggedIn(): boolean {
-    return this.user !== this.localUser;
+  isLoggedIn(user: User): boolean {
+    return user !== this.localUser;
   }
 
   getUser(): Observable<User> {
