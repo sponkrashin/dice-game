@@ -16,14 +16,14 @@ export class SavedGamesComponent implements OnInit {
   constructor(private gameStorageService: GameStorageService, private userService: UserService) {}
 
   ngOnInit(): void {
-    this.SetUserId(this.userService.getCurrentUserId());
+    this.setUserId(this.userService.getCurrentUserId());
 
     this.userService.getUser().subscribe((user) => {
-      this.SetUserId(user.id);
+      this.setUserId(user.id);
     });
   }
 
-  private SetUserId(userId: string): void {
+  private setUserId(userId: string): void {
     this.userId = userId;
     this.loadSavedGames();
   }

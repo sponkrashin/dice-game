@@ -10,7 +10,9 @@ export interface User {
   photoUrl: string;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class UserService {
   private readonly localUser: User;
   private user: User;

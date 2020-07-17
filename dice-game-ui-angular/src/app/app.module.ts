@@ -81,7 +81,6 @@ import { UserService } from './services/user-service';
     },
     { provide: GameStorageService, useClass: LocalGameStorageService },
     { provide: StatisticsService, useClass: LocalStatisticsService },
-    UserService,
   ],
   bootstrap: [AppComponent],
 })

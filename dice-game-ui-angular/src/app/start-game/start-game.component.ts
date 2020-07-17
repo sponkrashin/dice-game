@@ -14,7 +14,6 @@ export class StartGameComponent implements OnInit {
   size: number;
   sizeOptions: number[] = [];
 
-  private readonly localPlayer = 'local player';
   private userId: string;
 
   constructor(
