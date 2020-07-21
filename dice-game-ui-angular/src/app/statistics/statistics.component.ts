@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SubscriptionLike } from 'rxjs';
 import { StatisticsService } from '../services/statistics-service';
 import { UserService } from '../services/user-service';
@@ -17,7 +17,7 @@ export interface StatisticsDTO {
   templateUrl: './statistics.component.html',
   styleUrls: ['./statistics.component.scss'],
 })
-export class StatisticsComponent implements OnInit {
+export class StatisticsComponent implements OnInit, OnDestroy {
   statistics: StatisticsDTO[] = [];
   displayedColumns: string[];
 

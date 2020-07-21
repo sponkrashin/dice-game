@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SubscriptionLike } from 'rxjs';
 import * as d3 from 'd3';
@@ -20,7 +20,7 @@ interface FieldPoint {
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss'],
 })
-export class GameComponent implements OnInit, AfterViewInit {
+export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   dice1 = 0;
   dice2 = 0;
   gameFinished = false;

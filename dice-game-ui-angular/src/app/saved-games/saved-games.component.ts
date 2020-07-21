@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SubscriptionLike } from 'rxjs';
 import { Guid } from 'guid-typescript';
 import { GameStorageService, SavedGameEngine } from '../services/game-storage-service';
@@ -9,7 +9,7 @@ import { UserService } from '../services/user-service';
   templateUrl: './saved-games.component.html',
   styleUrls: ['./saved-games.component.scss'],
 })
-export class SavedGamesComponent implements OnInit {
+export class SavedGamesComponent implements OnInit, OnDestroy {
   games: SavedGameEngine[] = [];
 
   private userId: string;

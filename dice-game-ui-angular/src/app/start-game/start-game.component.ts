@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SubscriptionLike } from 'rxjs';
 import { Router } from '@angular/router';
 import { SimpleGameEngine } from 'engine';
@@ -11,7 +11,7 @@ import { UserService } from '../services/user-service';
   templateUrl: './start-game.component.html',
   styleUrls: ['./start-game.component.scss'],
 })
-export class StartGameComponent implements OnInit {
+export class StartGameComponent implements OnInit, OnDestroy {
   size: number;
   sizeOptions: number[] = [];
 
