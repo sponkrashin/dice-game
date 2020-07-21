@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SubscriptionLike } from 'rxjs';
 import { StatisticsService } from '../services/statistics-service';
 import { UserService } from '../services/user-service';
 
@@ -21,20 +22,17 @@ export class StatisticsComponent implements OnInit {
   displayedColumns: string[];
 
   private userId: string;
+  private userServiceSubscription: SubscriptionLike;
 
   constructor(private userService: UserService, private statisticsService: StatisticsService) {
     this.displayedColumns = ['wasCompleted', 'gameType', 'fieldSize', 'turnsCount', 'score', 'isWinner'];
   }
 
   ngOnInit(): void {
-    this.userService.getUser().subscribe((user) => {
-      this.setUserId(user.id);
+    this.userServiceSubscription = this.userService.getUser().subscribe((user) => {
+      this.userId = user.id;
+      this.loadUserStatistics();
     });
-  }
-
-  private setUserId(userId: string): void {
-    this.userId = userId;
-    this.loadUserStatistics();
   }
 
   private loadUserStatistics(): void {
@@ -52,5 +50,12 @@ export class StatisticsComponent implements OnInit {
           wasCompleted: !!s.winnerPlayer,
         } as StatisticsDTO;
       });
+  }
+
+  ngOnDestroy() {
+    if (this.userServiceSubscription) {
+      this.userServiceSubscription.unsubscribe();
+      this.userServiceSubscription = null;
+    }
   }
 }

@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { SocialAuthService, GoogleLoginProvider, FacebookLoginProvider } from 'angularx-social-login';
 
-export type AuthUserEventHandler = (user: User) => void;
-
 export interface User {
   id: string;
   name: string;

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SubscriptionLike } from 'rxjs';
 import { Router } from '@angular/router';
 import { SimpleGameEngine } from 'engine';
 import { GameStorageService } from '../services/game-storage-service';
@@ -15,16 +16,17 @@ export class StartGameComponent implements OnInit {
   sizeOptions: number[] = [];
 
   private userId: string;
+  private userServiceSubscription: SubscriptionLike;
 
   constructor(
     private router: Router,
     private gameStorageService: GameStorageService,
     private userService: UserService,
     private statisticsService: StatisticsService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.userService.getUser().subscribe((user) => {
+    this.userServiceSubscription = this.userService.getUser().subscribe((user) => {
       this.userId = user.id;
     });
     this.sizeOptions = [];
@@ -38,5 +40,12 @@ export class StartGameComponent implements OnInit {
     const gameGuid = this.gameStorageService.saveGame(newGame);
     this.statisticsService.create(gameGuid, newGame, this.userId);
     this.router.navigate(['/game', gameGuid.toString()]);
+  }
+
+  ngOnDestroy() {
+    if (this.userServiceSubscription) {
+      this.userServiceSubscription.unsubscribe();
+      this.userServiceSubscription = null;
+    }
   }
 }
