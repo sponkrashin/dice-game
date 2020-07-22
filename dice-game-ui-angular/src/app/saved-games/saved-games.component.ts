@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SubscriptionLike } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Guid } from 'guid-typescript';
 import { GameStorageService, SavedGameEngine } from '../services/game-storage-service';
 import { UserService } from '../services/user-service';
@@ -13,9 +13,9 @@ export class SavedGamesComponent implements OnInit, OnDestroy {
   games: SavedGameEngine[] = [];
 
   private userId: string;
-  private userServiceSubscription: SubscriptionLike;
+  private userServiceSubscription: Subscription;
 
-  constructor(private gameStorageService: GameStorageService, private userService: UserService) { }
+  constructor(private gameStorageService: GameStorageService, private userService: UserService) {}
 
   ngOnInit(): void {
     this.userServiceSubscription = this.userService.getUser().subscribe((user) => {

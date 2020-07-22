@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SubscriptionLike } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { StatisticsService } from '../services/statistics-service';
 import { UserService } from '../services/user-service';
 
@@ -22,7 +22,7 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   displayedColumns: string[];
 
   private userId: string;
-  private userServiceSubscription: SubscriptionLike;
+  private userServiceSubscription: Subscription;
 
   constructor(private userService: UserService, private statisticsService: StatisticsService) {
     this.displayedColumns = ['wasCompleted', 'gameType', 'fieldSize', 'turnsCount', 'score', 'isWinner'];

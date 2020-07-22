@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SubscriptionLike } from 'rxjs';
+import { Subscription } from 'rxjs';
 import * as d3 from 'd3';
 import { Guid } from 'guid-typescript';
 import { GameEngine, Rect, Size } from 'engine';
@@ -41,7 +41,7 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   private startPoint: FieldPoint = null;
 
   private userId: string;
-  private userServiceSubscription: SubscriptionLike;
+  private userServiceSubscription: Subscription;
 
   constructor(
     private router: Router,

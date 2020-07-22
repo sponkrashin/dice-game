@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SubscriptionLike } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { SimpleGameEngine } from 'engine';
 import { GameStorageService } from '../services/game-storage-service';
@@ -16,14 +16,14 @@ export class StartGameComponent implements OnInit, OnDestroy {
   sizeOptions: number[] = [];
 
   private userId: string;
-  private userServiceSubscription: SubscriptionLike;
+  private userServiceSubscription: Subscription;
 
   constructor(
     private router: Router,
     private gameStorageService: GameStorageService,
     private userService: UserService,
     private statisticsService: StatisticsService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.userServiceSubscription = this.userService.getUser().subscribe((user) => {
