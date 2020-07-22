@@ -55,7 +55,6 @@ export class StatisticsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe();
-      this.userServiceSubscription = null;
     }
   }
 }

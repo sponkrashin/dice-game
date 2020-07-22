@@ -373,7 +373,6 @@ export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy() {
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe();
-      this.userServiceSubscription = null;
     }
   }
 }

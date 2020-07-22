@@ -42,7 +42,6 @@ export class SavedGamesComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.userServiceSubscription) {
       this.userServiceSubscription.unsubscribe();
-      this.userServiceSubscription = null;
     }
   }
 }
