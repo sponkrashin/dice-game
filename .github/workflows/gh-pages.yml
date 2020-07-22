@@ -3,9 +3,6 @@ name: Github Pages
 on:
   push:
     branches: 'master'
-    paths:
-      - 'dice-game-ui-angular/**'
-      - 'engine/**'
 
 jobs:
   build:
