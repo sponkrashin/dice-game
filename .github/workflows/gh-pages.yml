@@ -25,6 +25,14 @@ jobs:
       - name: Linting
         run: npm run lint
         working-directory: ${{env.working_directory}}
+      
+      - name: Replace tokens
+        uses: cschleiden/replace-tokens@v1.0
+        with:
+          files: '["dice-game-ui-angular/src/environments/environment.prod.ts"]'
+        env:
+          googleClientId: ${{ secrets.GOOGLE_CLIENT_ID }}
+          fbAuthClientId: ${{ secrets.FACEBOOK_CLIENT_ID }}
 
       - name: Build
         run: npm run gh-pages
