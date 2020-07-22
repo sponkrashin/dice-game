@@ -12,6 +12,14 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 
+import {
+  SocialAuthServiceConfig,
+  SocialLoginModule,
+  GoogleLoginProvider,
+  FacebookLoginProvider,
+} from 'angularx-social-login';
+
+import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { StartGameComponent } from './start-game/start-game.component';
@@ -22,8 +30,10 @@ import { StatisticsComponent } from './statistics/statistics.component';
 import { SavedGamesComponent } from './saved-games/saved-games.component';
 import { GameStorageService } from './services/game-storage-service';
 import { LocalGameStorageService } from './services/local-game-storage-service';
+import { LoginComponent } from './login/login.component';
 import { StatisticsService } from './services/statistics-service';
 import { LocalStatisticsService } from './services/local-statistics-service';
+import { UserService } from './services/user-service';
 
 @NgModule({
   declarations: [
@@ -33,6 +43,7 @@ import { LocalStatisticsService } from './services/local-statistics-service';
     GameComponent,
     MainComponent,
     SavedGamesComponent,
+    LoginComponent,
     StatisticsComponent,
   ],
   imports: [
@@ -49,8 +60,25 @@ import { LocalStatisticsService } from './services/local-statistics-service';
     MatCardModule,
     MatIconModule,
     MatTableModule,
+    SocialLoginModule,
   ],
   providers: [
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: true,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(environment.googleAuthClientId),
+          },
+          {
+            id: FacebookLoginProvider.PROVIDER_ID,
+            provider: new FacebookLoginProvider(environment.fbAuthClientId),
+          },
+        ],
+      } as SocialAuthServiceConfig,
+    },
     { provide: GameStorageService, useClass: LocalGameStorageService },
     { provide: StatisticsService, useClass: LocalStatisticsService },
   ],

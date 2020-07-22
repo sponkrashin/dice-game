@@ -3,9 +3,9 @@ import { Guid } from 'guid-typescript';
 import { GameEngine, Size } from 'engine';
 
 export class GameStatistics {
-  readonly creatingDate: Date;
   playersStaistics: PlayerStaistics[];
-  public winnerPlayer: string;
+  winnerPlayer: string;
+  readonly creatingDate: Date;
 
   constructor(public gameGuid: string, public gameType: string, public fieldSize: Size, public startPlayer: string) {
     this.playersStaistics = [];

@@ -1,19 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Guid } from 'guid-typescript';
 import { GameStorageService, SavedGameEngine } from '../services/game-storage-service';
+import { UserService } from '../services/user-service';
 
 @Component({
   selector: 'app-saved-games',
   templateUrl: './saved-games.component.html',
   styleUrls: ['./saved-games.component.scss'],
 })
-export class SavedGamesComponent implements OnInit {
-  games: SavedGameEngine[];
+export class SavedGamesComponent implements OnInit, OnDestroy {
+  games: SavedGameEngine[] = [];
 
-  constructor(private gameStorageService: GameStorageService) {}
+  private userId: string;
+  private userServiceSubscription: Subscription;
+
+  constructor(private gameStorageService: GameStorageService, private userService: UserService) {}
 
   ngOnInit(): void {
-    this.setAllGameEngines();
+    this.userServiceSubscription = this.userService.getUser().subscribe((user) => {
+      this.userId = user.id;
+      this.loadSavedGames();
+    });
   }
 
   getGameLink(gameEngine: SavedGameEngine) {
@@ -22,12 +30,18 @@ export class SavedGamesComponent implements OnInit {
 
   removeSavedGame(guid: Guid) {
     this.gameStorageService.removeGame(guid);
-    this.setAllGameEngines();
+    this.loadSavedGames();
   }
 
-  private setAllGameEngines() {
+  private loadSavedGames() {
     this.games = this.gameStorageService
-      .getAllSavedGames()
+      .getPlayerSavedGames(this.userId)
       .sort((game1, game2) => (game1.creationDate < game2.creationDate ? 1 : -1));
+  }
+
+  ngOnDestroy() {
+    if (this.userServiceSubscription) {
+      this.userServiceSubscription.unsubscribe();
+    }
   }
 }

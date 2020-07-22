@@ -18,9 +18,11 @@ export class SavedGameEngine {
 export abstract class GameStorageService {
   abstract restoreGame(guid: Guid): GameEngine;
   abstract removeGame(guid: Guid): void;
-  abstract getAllSavedGames(): SavedGameEngine[];
+  abstract getPlayerSavedGames(playerId: string): SavedGameEngine[];
 
   saveGame(gameEngine: GameEngine, guid: Guid = null): Guid {
     throw new Error('The method was not implemented');
   }
+
+  protected abstract getAllSavedGames(): SavedGameEngine[];
 }

@@ -1,10 +1,12 @@
-import { Component, OnInit, AfterViewInit, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import * as d3 from 'd3';
 import { Guid } from 'guid-typescript';
 import { GameEngine, Rect, Size } from 'engine';
 import { GameStorageService } from '../services/game-storage-service';
 import { StatisticsService } from '../services/statistics-service';
+import { UserService } from '../services/user-service';
 
 interface FieldPoint {
   readonly x: number;
@@ -18,7 +20,12 @@ interface FieldPoint {
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.scss'],
 })
-export class GameComponent implements OnInit, AfterViewInit {
+export class GameComponent implements OnInit, OnDestroy, AfterViewInit {
+  dice1 = 0;
+  dice2 = 0;
+  gameFinished = false;
+  score = 0;
+
   private readonly setColor: string = '#D28EFF';
   private readonly selectedColor: string = '#3f51b5';
   private readonly emptyColor: string = 'lightblue';
@@ -33,19 +40,17 @@ export class GameComponent implements OnInit, AfterViewInit {
   private svg: any = null;
   private startPoint: FieldPoint = null;
 
-  dice1 = 0;
-  dice2 = 0;
-  gameFinished = false;
-  score = 0;
+  private userId: string;
+  private userServiceSubscription: Subscription;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private userService: UserService,
     private gameStorageService: GameStorageService,
     private statisticsService: StatisticsService
   ) {
     this.gameGuid = Guid.parse(this.route.snapshot.paramMap.get('id'));
-
     try {
       this.gameEngine = this.gameStorageService.restoreGame(this.gameGuid);
     } catch {
@@ -55,6 +60,10 @@ export class GameComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.userServiceSubscription = this.userService.getUser().subscribe((user) => {
+      this.userId = user.id;
+    });
+
     if (!this.gameEngine) {
       return;
     }
@@ -63,12 +72,7 @@ export class GameComponent implements OnInit, AfterViewInit {
       this.gameStorageService.saveGame(this.gameEngine, this.gameGuid);
       // saving statistics
       for (const player of engine.players) {
-        this.statisticsService.saveTurn(
-          this.gameGuid,
-          player.playerId ?? 'local player',
-          player.score,
-          player.rects.length
-        );
+        this.statisticsService.saveTurn(this.gameGuid, player.playerId, player.score, player.rects.length);
       }
 
       this.score = engine.players[0].score;
@@ -79,7 +83,7 @@ export class GameComponent implements OnInit, AfterViewInit {
     this.gameEngine.registerOnGameFinished((engine) => {
       this.gameFinished = true;
       this.gameStorageService.removeGame(this.gameGuid);
-      this.statisticsService.finish(this.gameGuid, engine.players[0].playerId ?? 'local player');
+      this.statisticsService.finish(this.gameGuid, engine.players[0].playerId);
     });
 
     this.gameEngine.startGame();
@@ -252,7 +256,7 @@ export class GameComponent implements OnInit, AfterViewInit {
 
         if (this.isFullRect(selectedRect)) {
           try {
-            this.gameEngine.addRect(null, selectedRect);
+            this.gameEngine.addRect(this.userId, selectedRect);
             this.dice1 = 0;
             this.dice2 = 0;
             if (this.gameEngine.state.reduce((prev, next) => prev.concat(next)).filter((c) => !c).length === 0) {
@@ -364,5 +368,11 @@ export class GameComponent implements OnInit, AfterViewInit {
 
     this.renderField();
     return new Rect(minY, minX, maxY - minY + 1, maxX - minX + 1); // inverted axis!!
+  }
+
+  ngOnDestroy() {
+    if (this.userServiceSubscription) {
+      this.userServiceSubscription.unsubscribe();
+    }
   }
 }

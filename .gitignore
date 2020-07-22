@@ -4,3 +4,4 @@
 **/npm-debug.log
 **/yarn-error.log
 test-client/index.js
+dice-game-ui-angular/src/environments/env.json
